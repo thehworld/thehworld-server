@@ -188,7 +188,7 @@ app.get('/auth/google/success', isLoggedIn,(req, res) => {
     console.log('req.user - ',req.user.displayName);
     console.log('req.user body - ', req.user);
     // res.send(`You are logged in!!! ${req.user.displayName}`);
-    res.redirect('https://localhost:3000/test');
+    res.redirect('https://thehworld-ecom-staging.netlify.app/test');
 }); 
 
 app.get('/auth/google/logout',(req, res) => {
