@@ -215,12 +215,12 @@ app.get('/check/user', (req, res) => {
     
 });
 
-https.createServer(options, app)
-    .listen(port, function() {
-        Pig.server(port);
-    });
+// https.createServer(options, app)
+//     .listen(port, function() {
+//         Pig.server(port);
+//     });
 
 
-// app.listen(port, () => {
-//     Pig.server(port);
-// });
+app.listen(port, () => {
+    Pig.server(port);
+});
