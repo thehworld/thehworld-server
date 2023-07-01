@@ -14,7 +14,7 @@ const cookieParser = require('cookie-parser');
 app.use(bodyParser.json());
 app.use(cookieParser());
 const corsConfig = {
-    origin: ['http://localhost:3000','http://localhost:3001'],
+    origin: ['http://localhost:3000','http://localhost:3001', 'https://thehworld-ecom-staging.netlify.app'],
     credentials: true,
     methods: ["POST", "PUT", "GET", "OPTIONS", "HEAD"]
 };
@@ -80,7 +80,7 @@ function isLoggedIn(req, res, next) {
 passport.use(new GoogleStrategy({
     clientID: "920983269808-i5tjk4h12oimi0o6irfcjoapfqrdptst.apps.googleusercontent.com",
     clientSecret: "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",
-    callbackURL: 'https://localhost:8080/auth/google/callback',
+    callbackURL: 'https://thehworld-ecom-staging.onrender.com/auth/google/callback',
     scope: [ 'profile', 'email' ],
     state: true,
     passReqToCallback: true,
