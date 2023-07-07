@@ -213,7 +213,7 @@ app.get('/auth/google/callback',
 app.get('/check/user', (req, res) => {
     console.log("User Session - ", req.session);
     console.log("User Data - ", req.user);
-    console.log("User Session Data - ", req.session.user);
+    console.log("User Session Data - ", req.session);
 });
 
 // https.createServer(options, app)
