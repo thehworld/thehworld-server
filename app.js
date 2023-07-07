@@ -14,7 +14,7 @@ const cookieParser = require('cookie-parser');
 app.use(bodyParser.json());
 app.use(cookieParser());
 const corsConfig = {
-    origin: ['http://localhost:3000','http://localhost:3001', 'https://thehworld-ecom-staging.netlify.app'],
+    origin: ['http://localhost:3000', 'http://localhost:3001', 'https://thehworld-ecom-staging.netlify.app'],
     credentials: true,
     methods: ["POST", "PUT", "GET", "OPTIONS", "HEAD"]
 };
@@ -35,7 +35,7 @@ mongoose
         useNewUrlParser: true,
         useUnifiedTopology: true,
     })
-    .then(() => {  
+    .then(() => {
         Pig.db();
     });
 
@@ -78,22 +78,22 @@ function isLoggedIn(req, res, next) {
 }
 
 passport.use(new GoogleStrategy({
-    clientID: "920983269808-i5tjk4h12oimi0o6irfcjoapfqrdptst.apps.googleusercontent.com",
-    clientSecret: "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",
-    callbackURL: 'https://thehworld-ecom-staging.onrender.com/auth/google/callback',
-    scope: [ 'profile', 'email' ],
-    state: true,
-    passReqToCallback: true,
-  },
-  function(request, accessToken, refreshToken, profile, done) {
-    console.log('Profile - ', profile);
-    done(null, profile);
-  }
+        clientID: "920983269808-i5tjk4h12oimi0o6irfcjoapfqrdptst.apps.googleusercontent.com",
+        clientSecret: "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",
+        callbackURL: 'https://thehworld-ecom-staging.onrender.com/auth/google/callback',
+        scope: ['profile', 'email'],
+        state: true,
+        passReqToCallback: true,
+    },
+    function(request, accessToken, refreshToken, profile, done) {
+        console.log('Profile - ', profile);
+        done(null, profile);
+    }
 ));
 
 
 passport.serializeUser((user, done) => {
-    done(null, user)    
+    done(null, user)
 });
 
 passport.deserializeUser((user, done) => {
@@ -179,48 +179,48 @@ app.use(WEB, productRouter);
 
 // exports.app = functions.https.onRequest(app);
 app.get('/auth/google',
-  passport.authenticate('google', { scope:
-      [ 'email', 'profile' ] }
-));
+    passport.authenticate('google', {
+        scope: ['email', 'profile']
+    }));
 
 
-app.get('/auth/google/success', isLoggedIn,(req, res) => {
-    console.log('req.user - ',req.user.displayName);
+app.get('/auth/google/success', isLoggedIn, (req, res) => {
+    console.log('req.user - ', req.user.displayName);
     console.log('req.user body - ', req.user);
     // res.send(`You are logged in!!! ${req.user.displayName}`);
     res.redirect('https://thehworld-ecom-staging.netlify.app/test');
-}); 
+});
 
-app.get('/auth/google/logout',(req, res) => {
+app.get('/auth/google/logout', (req, res) => {
     req.session.destroy();
     res.send("See you again!!!");
 });
 
-app.get('/auth/google/failure',(req, res) => {
+app.get('/auth/google/failure', (req, res) => {
     req.send('Login Failure');
 });
 
 app.get('/auth/google/callback',
-    passport.authenticate( 'google', {
+    passport.authenticate('google', {
         successRedirect: '/auth/google/success',
         failureRedirect: '/auth/google/failure'
-}));
+    }));
 
 
 
 // User Auth Testing
 app.get('/check/user', (req, res) => {
-    console.log(req.session);
-    console.log(req.user);
-    
+    console.log("User Session - ", req.session);
+    console.log("User Data - ", req.user);
+
 });
 
-// https.createServer(options, app)
-//     .listen(port, function() {
-//         Pig.server(port);
-//     });
+https.createServer(options, app)
+    .listen(port, function() {
+        Pig.server(port);
+    });
 
 
-app.listen(port, () => {
-    Pig.server(port);
-});
+// app.listen(port, () => {
+//     Pig.server(port);
+// });
