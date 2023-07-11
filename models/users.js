@@ -34,10 +34,16 @@ const userSchema = new mongoose.Schema({
 
     userPhone: {
         type: String,
-        trim: true,
-        unique: true,
+        trim: true
     },
 
+    userProfilePic: {
+        type: String
+    },
+
+    userGoogleName: {
+        type: String
+    },
 
     userLocation: {
         type: { type: String },
