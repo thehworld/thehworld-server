@@ -22,10 +22,6 @@ app.use(cors(corsConfig));
 
 
 
-const passport = require('passport');
-var GoogleStrategy = require('passport-google-oauth20');
-
-
 
 //TODO: Mongoose Setup Node
 // ******************************************************************* DB Connection
@@ -65,40 +61,6 @@ app.use(session({
     saveUninitialized: true
 }));
 
-// Passport middleware
-app.use(passport.initialize());
-app.use(passport.session());
-
-
-
-
-
-function isLoggedIn(req, res, next) {
-    req.user ? next() : res.sendStatus(401);
-}
-
-passport.use(new GoogleStrategy({
-        clientID: "920983269808-i5tjk4h12oimi0o6irfcjoapfqrdptst.apps.googleusercontent.com",
-        clientSecret: "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",
-        callbackURL: 'https://thehworld-ecom-staging.onrender.com/auth/google/callback',
-        scope: ['profile', 'email'],
-        state: true,
-        passReqToCallback: true,
-    },
-    function(request, accessToken, refreshToken, profile, done) {
-        console.log('Profile - ', profile);
-        done(null, profile);
-    }
-));
-
-
-passport.serializeUser((user, done) => {
-    done(null, user)
-});
-
-passport.deserializeUser((user, done) => {
-    done(null, user)
-})
 
 
 
@@ -116,6 +78,10 @@ const port = process.env.PORT || 8080;
 
 
 // ************************ Import all routes here **********************
+
+// ? User Routes
+const userRoute = require("./routes/user");
+
 
 // ? Admin Routes
 const categoryRouter = require("./routes/category");
@@ -168,53 +134,16 @@ const WEB = '/api/web';
 app.use(WEB, categoryRouter);
 app.use(WEB, productRouter);
 
+// ?? Auth 
+app.use(WEB, userRoute);
+
 // ***************************************************************************** 
 
 
 // TODO: Starting HTTPs Node Server
 // ****************************************************************** Node Server
-// app.listen(port, () => {
-//     Pig.server(port);
-// });
 
 // exports.app = functions.https.onRequest(app);
-app.get('/auth/google',
-    passport.authenticate('google', {
-        scope: ['email', 'profile']
-    }));
-
-
-app.get('/auth/google/success', isLoggedIn, (req, res) => {
-    console.log('req.user - ', req.user.displayName);
-    console.log('req.user body - ', req.user);
-    req.session.user = req.user;
-    // res.send(`You are logged in!!! ${req.user.displayName}`);
-    res.redirect('https://thehworld-ecom-staging.netlify.app/test');
-});
-
-app.get('/auth/google/logout', (req, res) => {
-    req.session.destroy();
-    res.send("See you again!!!");
-});
-
-app.get('/auth/google/failure', (req, res) => {
-    req.send('Login Failure');
-});
-
-app.get('/auth/google/callback',
-    passport.authenticate('google', {
-        successRedirect: '/auth/google/success',
-        failureRedirect: '/auth/google/failure'
-    }));
-
-
-
-// User Auth Testing
-app.get('/check/user', (req, res) => {
-    console.log("User Session - ", req.session);
-    console.log("User Data - ", req.user);
-    console.log("User Session Data - ", req.session);
-});
 
 // https.createServer(options, app)
 //     .listen(port, function() {
