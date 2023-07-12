@@ -159,6 +159,11 @@ exports.addToCartRemove = (req, res) => {
                 userCart: cart_list
             }).then((user, err) => {
                 console.log("user - ", user, err);
+                return res.json({
+                    data: user
+                })
+            }).catch((err) => {
+                console.log("Error - ", err);
             });
         } else {
             const cart_object = req.body.product;
@@ -168,6 +173,11 @@ exports.addToCartRemove = (req, res) => {
                 userCart: new_cart_list
             }).then((user, err) => {
                 console.log("user - ", user, err);
+                return res.json({
+                    data: user
+                })
+            }).catch((err) => {
+                console.log("Error - ", err);
             });
         }
     } else if (user_cart.length > 0 && req.body.opt === "Rmv") {
@@ -182,6 +192,9 @@ exports.addToCartRemove = (req, res) => {
                     userCart: new_list_cart
                 }).then((user, err) => {
                     console.log("user - ", user, err);
+                    return res.json({
+                        data: user
+                    })
                 });
             } else {
                 const cart_list = req.user.userCart;
@@ -195,6 +208,9 @@ exports.addToCartRemove = (req, res) => {
                     userCart: cart_list
                 }).then((user, err) => {
                     console.log("user - ", user, err);
+                    return res.json({
+                        data: user
+                    })
                 });
             }
         }
@@ -206,6 +222,11 @@ exports.addToCartRemove = (req, res) => {
             userCart: new_cart_list
         }).then((user, err) => {
             console.log("user - ", user, err);
+            return res.json({
+                data: user
+            })
+        }).catch((err) => {
+            console.log("Error - ", err);
         });
     }
 }
