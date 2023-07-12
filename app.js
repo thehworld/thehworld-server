@@ -14,7 +14,7 @@ const cookieParser = require('cookie-parser');
 app.use(bodyParser.json());
 app.use(cookieParser());
 const corsConfig = {
-    origin: ['https://thehworld-ecom-staging.netlify.app', 'https://rococo-banoffee-61f602.netlify.app'],
+    origin: ['http://localhost:3000', 'https://thehworld-ecom-staging.netlify.app', 'https://rococo-banoffee-61f602.netlify.app'],
     credentials: true,
     methods: ["POST", "PUT", "GET", "OPTIONS", "HEAD"]
 };

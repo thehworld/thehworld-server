@@ -98,3 +98,8 @@ exports.getUserAuthFromToken = (req, res) => {
         })
     }
 }
+
+exports.getUserDetailToken = (req, res) => {
+    pigcolor.box("Get: User Details From Token");
+
+}

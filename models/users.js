@@ -55,8 +55,7 @@ const userSchema = new mongoose.Schema({
     },
 
     userCart: {
-        type: ObjectId,
-        ref: "Cart",
+        type: Object
     },
 
 
