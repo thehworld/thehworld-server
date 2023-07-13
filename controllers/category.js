@@ -5,6 +5,9 @@ const Category = require('../models/category');
 
 // Get Category
 exports.getAllCategory = (req, res) => {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+
     Pig.box("GET ALL: Category");
     Category.find({})
         .then((allCategory, err) => {

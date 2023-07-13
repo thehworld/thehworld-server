@@ -3,6 +3,7 @@ const { createCategory, updateCategory, deleteCategory, getAllCategory, getACate
 const route = express.Router();
 
 
+
 // ** Control Category
 route.post("/create/category", createCategory);
 

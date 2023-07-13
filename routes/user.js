@@ -4,6 +4,8 @@ const route = express.Router();
 
 
 
+
+
 route.post('/user/auth/google', userAuthGoogle);
 route.get('/user/data', getUserAuthFromToken);
 route.get('/get/user/details', getUserDetailToken);
