@@ -124,8 +124,8 @@ app.use(WEB, userRoute);
 //     });
 
 
-app.get("/payment/redirect", (req, res) => {
-    console.log("Payment Redirect - ", req.params);
+app.post("/payment/redirect", (req, res) => {
+    console.log("Payment Redirect - ", req.body);
     res.send("Success Payment");
 });
 
