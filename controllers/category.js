@@ -5,7 +5,7 @@ const Category = require('../models/category');
 
 // Get Category
 exports.getAllCategory = (req, res) => {
-    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Origin", "https://rococo-banoffee-61f602.netlify.app");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
 
     Pig.box("GET ALL: Category");
