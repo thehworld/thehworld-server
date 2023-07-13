@@ -19,7 +19,8 @@ app.use(cookieParser());
 const corsOptions = {
     AccessControlAllowOrigin: '*',
     origin: 'https://vocal-cassata-37976e.netlify.app',
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE'
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true
 }
 app.use(cors(corsOptions));
 
