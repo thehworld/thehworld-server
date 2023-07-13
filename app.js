@@ -101,8 +101,8 @@ const MOBILE = '/api/mobile';
 const WEB = '/api/web';
 
 
-app.use(WEB, cors(), categoryRouter);
-app.use(WEB, cors(), productRouter);
+app.use(WEB, categoryRouter);
+app.use(WEB, productRouter);
 
 // ?? Auth 
 app.use(WEB, userRoute);
