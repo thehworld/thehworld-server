@@ -128,8 +128,8 @@ app.post("/payment/redirect", (req, res) => {
     console.log("Payment Redirect - ", req.body);
 });
 
-app.get("/payment/callback", (req, res) => {
-    console.log("Payment Calback - ", req.params);
+app.post("/payment/callback", (req, res) => {
+    console.log("Payment Calback - ", req.body);
     console.log("Payment Calback - ", req.headers);
 });
 
