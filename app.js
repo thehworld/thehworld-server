@@ -16,7 +16,13 @@ const cookieParser = require('cookie-parser');
 app.use(bodyParser.json());
 app.use(cookieParser());
 
-app.use(cors());
+const corsOptions = {
+    AccessControlAllowOrigin: '*',
+    origin: 'https://vocal-cassata-37976e.netlify.app',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE'
+}
+app.use(cors(corsOptions));
+
 app.options('*', cors());
 
 
