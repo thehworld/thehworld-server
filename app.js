@@ -18,7 +18,7 @@ const corsConfig = {
     credentials: true,
     methods: ["POST", "PUT", "GET", "OPTIONS", "HEAD"]
 };
-app.use(cors(corsConfig));
+app.use(cors());
 app.options('https://rococo-banoffee-61f602.netlify.app', cors());
 
 
