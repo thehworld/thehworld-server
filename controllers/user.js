@@ -7,13 +7,13 @@ const User = require('../models/users');
 
 exports.userAuthGoogle = (req, res) => {
     pigcolor.box("User: Auth Google");
-    console.log(req.body);
+    // console.log(req.body);
     if (!req.body)
         return res.status(400).json({
             error: "Empty payload!!"
         })
     User.findOne({ userEmail: req.body.user.email }).then((user, err) => {
-        // console.log(user, err);
+        console.log(user, err);
         if (err) {
             return res.status(400).json({
                 error: err
@@ -69,7 +69,7 @@ exports.userAuthGoogle = (req, res) => {
 
 exports.getUserAuthFromToken = (req, res) => {
     pigcolor.box("Get: User Details From Token");
-    console.log(req.headers.token);
+    // console.log(req.headers.token);
     const user_token = req.headers.token;
     const user_data = jwt_decode(user_token);
     if (user_data) {
