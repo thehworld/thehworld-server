@@ -27,6 +27,7 @@ exports.userAuthGoogle = (req, res) => {
             newUser.userGoogleName = req.body.user.name;
             newUser.userProfilePic = req.body.user.picture;
             newUser.userEmail = req.body.user.email;
+            newUser.userPhone = "91";
             const authCodeHere = uuidv4();
             newUser.userAuthCode = authCodeHere;
             newUser.save().then((newUser, err) => {
