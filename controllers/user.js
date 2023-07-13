@@ -80,12 +80,13 @@ exports.getUserAuthFromToken = (req, res) => {
                     status: false
                 })
             }
-            console.log(user);
             if (!user) {
                 return res.json({
                     status: false
                 })
             } else {
+                console.log("user - ", user);
+
                 return res.json({
                     status: true,
                     user: user
