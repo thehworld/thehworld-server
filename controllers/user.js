@@ -109,6 +109,34 @@ exports.getUserDetailToken = (req, res) => {
 }
 
 
+// ?? User Order
+
+exports.createOrder = (req, res) => {
+    pigcolor.box("Create: Order");
+}
+
+
+// ?? User Payment
+
+exports.userOrderPaymentRedirect = (req, res) => {
+    console.log("Payment Redirect - ", req.body);
+    res.send("Success Payment");
+}
+
+exports.userOrderPaymentCallback = (req, res) => {
+    console.log("Payment Calback - ", req.body);
+    console.log("Payment Calback - ", req.headers);
+
+
+    // * Steps to Verify the Payment Process
+
+    console.log();
+
+
+
+
+}
+
 // ?? Middleware
 
 exports.getUserInfoFromToken = (req, res, next) => {

@@ -124,17 +124,6 @@ app.use(WEB, userRoute);
 //     });
 
 
-app.post("/payment/redirect", (req, res) => {
-    console.log("Payment Redirect - ", req.body);
-    res.send("Success Payment");
-});
-
-app.post("/payment/callback", (req, res) => {
-    console.log("Payment Calback - ", req.body);
-    console.log("Payment Calback - ", req.headers);
-});
-
-
 app.listen(port, () => {
     Pig.server(port);
 });
