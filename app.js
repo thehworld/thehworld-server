@@ -12,54 +12,11 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 
 
-app.use(function(req, res, next) {
-
-    // Website you wish to allow to connect
-    res.setHeader('Access-Control-Allow-Origin', 'https://rococo-banoffee-61f602.netlify.app');
-
-    // Request methods you wish to allow
-    res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
-
-    // Request headers you wish to allow
-    res.setHeader('Access-Control-Allow-Headers', 'X-Requested-With,content-type');
-
-    // Set to true if you need the website to include cookies in the requests sent
-    // to the API (e.g. in case you use sessions)
-    res.setHeader('Access-Control-Allow-Credentials', true);
-
-    // Pass to next layer of middleware
-    next();
-});
-
-///
-
-
-app.all('/*', function(req, res, next) {
-    res.header("Access-Control-Allow-Origin", "https://rococo-banoffee-61f602.netlify.app");
-    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
-    res.header("Access-Control-Allow-Headers", "X-Requested-With,     Content-Type");
-    next();
-});
-
-
-// CORS middleware
-const allowCrossDomain = (req, res, next) => {
-    res.header(`Access-Control-Allow-Origin`, `https://rococo-banoffee-61f602.netlify.app`);
-    res.header(`Access-Control-Allow-Methods`, `GET,PUT,POST,DELETE`);
-    res.header(`Access-Control-Allow-Headers`, `Content-Type`);
-    next();
-};
-
 // ** Middlewares
 app.use(bodyParser.json());
 app.use(cookieParser());
-app.use(allowCrossDomain);
-const corsConfig = {
-    origin: ['http://localhost:3000', 'https://thehworld-ecom-staging.netlify.app', 'https://rococo-banoffee-61f602.netlify.app'],
-    credentials: true,
-    methods: ["POST", "PUT", "GET", "OPTIONS", "HEAD"]
-};
-app.use(cors(corsConfig));
+
+app.use(cors());
 app.options('https://rococo-banoffee-61f602.netlify.app', cors());
 
 
