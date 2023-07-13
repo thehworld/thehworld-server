@@ -7,7 +7,7 @@ const User = require('../models/users');
 
 exports.userAuthGoogle = (req, res) => {
     pigcolor.box("User: Auth Google");
-    // console.log(req.body);
+    console.log(req.body);
     if (!req.body)
         return res.status(400).json({
             error: "Empty payload!!"
