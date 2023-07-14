@@ -130,6 +130,7 @@ exports.createOrder = (req, res) => {
     newOrder.orderisOffer = uuidv4();
     newOrder.orderBy = uuidv4();
     newOrder.orderUpdateWAPhone = req.body.userWAPhone;
+    newOrder.orderProduct = req.body.userOrderProduct;
 
     // Payment
     newOrder.paymentId = merchantOrderId;
