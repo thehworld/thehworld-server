@@ -141,11 +141,10 @@ exports.createOrder = (req, res) => {
 
     // Shipment
     newOrder.shipmentId = merchantOrderId;
-    newOrder.shipmentPincode = req.body.orderPincode;
+    newOrder.shipmentPincode = req.body.userPincode;
     newOrder.shipmentAddress = req.body.userAddress + ", " + req.body.userAddressTwo + ", " + req.body.userCityTown + ", " + req.body.userState;
     newOrder.shipmentState = req.body.userState;
-    newOrder.shipmentCityTown = req.body.shipmentCityTown;
-    newOrder.shipmentState = req.body.userState;
+    newOrder.shipmentCityTown = req.body.userCityTown;
     newOrder.shipmentToken = uuidv4();
 
     newOrder.save().then((order, err) => {
