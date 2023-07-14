@@ -6,6 +6,8 @@ var base64 = require('base-64');
 var CryptoJS = require("crypto-js");
 var SHA256 = require("crypto-js/sha256");
 const { Base64 } = require('js-base64');
+const axios = require('axios');
+
 
 const User = require('../models/users');
 const Order = require('../models/orders');
