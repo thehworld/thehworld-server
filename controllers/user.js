@@ -130,121 +130,154 @@ exports.createOrder = (req, res) => {
         console.log(user_data);
         User.findOne({ userId: user_data.user.userId }).then((user, err) => {
             console.log("User - ", user);
+
+
+
+            const merchantOrderId = uuidv4();
+
+            const newOrder = new Order();
+            newOrder.orderId = merchantOrderId;
+            newOrder.orderNotes = req.body.userOrderNote;
+            newOrder.orderSubTotal = req.body.userOrderSubTotal;
+            newOrder.orderTotal = req.body.userOrderGrandTotal;
+            newOrder.orderisOffer = uuidv4();
+            newOrder.orderBy = uuidv4();
+            newOrder.orderUpdateWAPhone = req.body.userWAPhone;
+            newOrder.orderProduct = req.body.userOrderProduct;
+
+            // Payment
+            newOrder.paymentId = merchantOrderId;
+            newOrder.paymentToken = uuidv4();
+            newOrder.paymentTotal = req.body.userOrderGrandTotal;
+            // newOrder.paymentMethod = req.body.paymentMethod;
+
+            // *++ User 
+            newOrder.orderForUser = user._id;
+            // Shipment
+            newOrder.shipmentId = merchantOrderId;
+            newOrder.shipmentPincode = req.body.userPincode;
+            newOrder.shipmentAddress = req.body.userAddress + ", " + req.body.userAddressTwo + ", " + req.body.userCityTown + ", " + req.body.userState;
+            newOrder.shipmentState = req.body.userState;
+            newOrder.shipmentCityTown = req.body.userCityTown;
+            newOrder.shipmentToken = uuidv4();
+
+            newOrder.save().then((order, err) => {
+                if (err) {
+                    return res.json({
+                        error: err
+                    })
+                }
+                if (!order) {
+                    return res.json({
+                        error: "Order: Failure"
+                    })
+                }
+                console.log("Order Saved - ", order);
+
+
+                // Order Created Success
+                let user_order_list = user.userOrders;
+                user_order_list.push(order._id);
+                user.userOrders = user_order_list;
+                user.save().then((userOrder, err) => {
+                    if (err) {
+                        return res.json({
+                            error: err
+                        })
+                    }
+                    if (!userOrder) {
+                        return res.json({
+                            error: err
+                        })
+                    }
+
+
+
+                    // Generate PhonePe Payment Body
+                    const PhonePePaymentBody = {
+                        "merchantId": "PGTESTPAYUAT65",
+                        "merchantTransactionId": order.orderId,
+                        "merchantUserId": "MUID123",
+                        "amount": order.orderTotal * 100,
+                        "redirectUrl": "https://vocal-cassata-37976e.netlify.app/order/payment",
+                        "redirectMode": "POST",
+                        "callbackUrl": "https://thehworld-service-commerce.onrender.com/api/web/payment/callback",
+                        "mobileNumber": order.orderUpdateWAPhone,
+                        "paymentInstrument": {
+                            "type": "PAY_PAGE"
+                        }
+                    }
+                    console.log("Generated Payment Body - ", PhonePePaymentBody);
+                    var encodedData = base64.encode(JSON.stringify(PhonePePaymentBody));
+                    console.log("Generated Payment Body Base64 - ", encodedData);
+                    var salt = "c744c61e-b5a6-4be0-ac47-cc1b23788e60"
+                    var x_verify_payload = encodedData + "/pg/v1/pay" + salt
+                    console.log("x-verify Payload - ", x_verify_payload);
+                    var x_verify = SHA256(x_verify_payload) + "###1";
+                    console.log("x-verify  - ", x_verify);
+
+
+                    var redirect = "https://thehworld-service-commerce.onrender.com/api/web/payment/redirect";
+                    var callback = "https://thehworld-service-commerce.onrender.com/api/web/payment/callback";
+
+                    // Request to Payment Gateway
+
+                    let data = JSON.stringify({
+                        "request": encodedData
+                    });
+                    let config = {
+                        method: 'post',
+                        maxBodyLength: Infinity,
+                        url: 'https://api-preprod.phonepe.com/apis/merchant-simulator/pg/v1/pay',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-VERIFY': x_verify
+                        },
+                        data: data
+                    };
+
+                    axios.request(config).then((response) => {
+                        console.log(response.data);
+                        return res.json({
+                                paymentURlredirect: response.data.instrumentResponse,
+                                paymentObject: response.data,
+                                paymentStatus: true
+                            })
+                            // console.log("Payment Res - ", response);
+
+
+                    }).catch((err) => {
+                        console.log("Error - ", err);
+                    });
+
+
+
+                }).catch((error) => {
+                    onsole.log("User Order Update Error", err);
+                    return res.json({
+                        error: err
+                    })
+                })
+
+
+
+
+            }).catch((err) => {
+                console.log("Create Order Complete Error", err);
+                return res.json({
+                    error: err
+                })
+            })
+
+
+
+
+
         }).catch((err) => {
             return res.json({
                 status: false
             })
         })
-
-
-        // const merchantOrderId = uuidv4();
-
-        // const newOrder = new Order();
-        // newOrder.orderId = merchantOrderId;
-        // newOrder.orderNotes = req.body.userOrderNote;
-        // newOrder.orderSubTotal = req.body.userOrderSubTotal;
-        // newOrder.orderTotal = req.body.userOrderGrandTotal;
-        // newOrder.orderisOffer = uuidv4();
-        // newOrder.orderBy = uuidv4();
-        // newOrder.orderUpdateWAPhone = req.body.userWAPhone;
-        // newOrder.orderProduct = req.body.userOrderProduct;
-
-        // // Payment
-        // newOrder.paymentId = merchantOrderId;
-        // newOrder.paymentToken = uuidv4();
-        // newOrder.paymentTotal = req.body.userOrderGrandTotal;
-        // // newOrder.paymentMethod = req.body.paymentMethod;
-
-
-        // // Shipment
-        // newOrder.shipmentId = merchantOrderId;
-        // newOrder.shipmentPincode = req.body.userPincode;
-        // newOrder.shipmentAddress = req.body.userAddress + ", " + req.body.userAddressTwo + ", " + req.body.userCityTown + ", " + req.body.userState;
-        // newOrder.shipmentState = req.body.userState;
-        // newOrder.shipmentCityTown = req.body.userCityTown;
-        // newOrder.shipmentToken = uuidv4();
-
-        // newOrder.save().then((order, err) => {
-        //     if (err) {
-        //         return res.json({
-        //             error: err
-        //         })
-        //     }
-        //     if (!order) {
-        //         return res.json({
-        //             error: "Order: Failure"
-        //         })
-        //     }
-        //     console.log("Order Saved - ", order);
-
-        //     // Order Success
-
-        //     // Generate PhonePe Payment Body
-        //     const PhonePePaymentBody = {
-        //         "merchantId": "PGTESTPAYUAT65",
-        //         "merchantTransactionId": order.orderId,
-        //         "merchantUserId": "MUID123",
-        //         "amount": order.orderTotal * 100,
-        //         "redirectUrl": "https://vocal-cassata-37976e.netlify.app/order/payment",
-        //         "redirectMode": "POST",
-        //         "callbackUrl": "https://thehworld-service-commerce.onrender.com/api/web/payment/callback",
-        //         "mobileNumber": order.orderUpdateWAPhone,
-        //         "paymentInstrument": {
-        //             "type": "PAY_PAGE"
-        //         }
-        //     }
-        //     console.log("Generated Payment Body - ", PhonePePaymentBody);
-        //     var encodedData = base64.encode(JSON.stringify(PhonePePaymentBody));
-        //     console.log("Generated Payment Body Base64 - ", encodedData);
-        //     var salt = "c744c61e-b5a6-4be0-ac47-cc1b23788e60"
-        //     var x_verify_payload = encodedData + "/pg/v1/pay" + salt
-        //     console.log("x-verify Payload - ", x_verify_payload);
-        //     var x_verify = SHA256(x_verify_payload) + "###1";
-        //     console.log("x-verify  - ", x_verify);
-
-
-        //     var redirect = "https://thehworld-service-commerce.onrender.com/api/web/payment/redirect";
-        //     var callback = "https://thehworld-service-commerce.onrender.com/api/web/payment/callback";
-
-        //     // Request to Payment Gateway
-
-        //     let data = JSON.stringify({
-        //         "request": encodedData
-        //     });
-        //     let config = {
-        //         method: 'post',
-        //         maxBodyLength: Infinity,
-        //         url: 'https://api-preprod.phonepe.com/apis/merchant-simulator/pg/v1/pay',
-        //         headers: {
-        //             'Content-Type': 'application/json',
-        //             'X-VERIFY': x_verify
-        //         },
-        //         data: data
-        //     };
-
-        //     axios.request(config).then((response) => {
-        //         console.log(response.data);
-        //         return res.json({
-        //                 paymentURlredirect: response.data.instrumentResponse,
-        //                 paymentObject: response.data,
-        //                 paymentStatus: true
-        //             })
-        //             // console.log("Payment Res - ", response);
-
-
-        //     }).catch((err) => {
-        //         console.log("Error - ", err);
-        //     });
-
-
-
-
-        // }).catch((err) => {
-        //     console.log("Create Order Complete Error", err);
-        //     return res.json({
-        //         error: err
-        //     })
-        // })
 
 
 
@@ -268,7 +301,33 @@ exports.userOrderPaymentCallback = (req, res) => {
     console.log("Payment Calback - ", req.headers);
     const decode_payment = base64.decode(req.body.response);
     console.log("Decode Payment Response - ", decode_payment);
-
+    const order_ID = decode_payment.data.merchantTransactionId;
+    Order.findOne({ orderId: order_ID }).then((order, err) => {
+        if (err) {
+            return res.json({
+                error: err
+            })
+        }
+        if (!order) {
+            return res.json({
+                error: "Order doesn't exist"
+            })
+        }
+        order.paymentResponse = decode_payment;
+        order.paymentResponse = decode_payment.data.paymentInstrument.type;
+        order.save().then((newOrder, err) => {
+            if (err) {
+                return res.json({
+                    error: err
+                })
+            }
+            console.log("Payment Order -> ", newOrder);
+        });
+    }).catch((error) => {
+        return res.json({
+            error: err
+        })
+    })
 
     // * Steps to Verify the Payment Process
 
