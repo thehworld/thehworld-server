@@ -164,9 +164,9 @@ exports.createOrder = (req, res) => {
             "merchantTransactionId": order.orderId,
             "merchantUserId": "MUID123",
             "amount": order.orderTotal,
-            "redirectUrl": "https://webhook.site/redirect-url",
+            "redirectUrl": "https://thehworld-service-commerce.onrender.com/api/web/payment/redirect",
             "redirectMode": "POST",
-            "callbackUrl": "https://webhook.site/callback-url",
+            "callbackUrl": "https://thehworld-service-commerce.onrender.com/api/web/payment/callback",
             "mobileNumber": order.orderUpdateWAPhone,
             "paymentInstrument": {
                 "type": "PAY_PAGE"
@@ -175,10 +175,23 @@ exports.createOrder = (req, res) => {
         var encodedData = base64.encode(PhonePePaymentBody);
         var salt = "c744c61e-b5a6-4be0-ac47-cc1b23788e60"
         var x_verify_payload = encodedData + "/pg/v1/pay" + salt
-        var x_verify = SHA256(x_verify_payload)
+        var x_verify = SHA256(x_verify_payload) + "###1";
+
+
+        var redirect = "https://thehworld-service-commerce.onrender.com/api/web/payment/redirect";
+        var callback = "https://thehworld-service-commerce.onrender.com/api/web/payment/callback";
 
         // Request to Payment Gateway
-
+        axios.post(`https://api-preprod.phonepe.com/apis/merchant-simulator/pg/v1/pay`, {
+            request: encodedData
+        }, {
+            headers: {
+                'Content-Type': 'application/json',
+                'X-VERIFY': x_verify
+            }
+        }).then((res) => {
+            console.log("Payment Res - ", res.body);
+        });
 
 
 
