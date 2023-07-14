@@ -121,6 +121,7 @@ exports.createOrder = (req, res) => {
     pigcolor.box("Create: Order");
 
     console.log("Order: ", req.body);
+    console.log("Order: ", req.user);
 
     const merchantOrderId = uuidv4();
 
@@ -170,7 +171,7 @@ exports.createOrder = (req, res) => {
             "merchantTransactionId": order.orderId,
             "merchantUserId": "MUID123",
             "amount": order.orderTotal * 100,
-            "redirectUrl": "https://thehworld-service-commerce.onrender.com/api/web/payment/redirect",
+            "redirectUrl": "https://vocal-cassata-37976e.netlify.app/order/payment",
             "redirectMode": "POST",
             "callbackUrl": "https://thehworld-service-commerce.onrender.com/api/web/payment/callback",
             "mobileNumber": order.orderUpdateWAPhone,
@@ -251,6 +252,8 @@ exports.userOrderPaymentRedirect = (req, res) => {
 exports.userOrderPaymentCallback = (req, res) => {
     console.log("Payment Calback - ", req.body);
     console.log("Payment Calback - ", req.headers);
+    const decode_payment = base64.decode(req.body.response);
+    console.log("Decode Payment Response - ", decode_payment);
 
 
     // * Steps to Verify the Payment Process
