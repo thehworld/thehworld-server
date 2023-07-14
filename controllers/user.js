@@ -301,6 +301,7 @@ exports.userOrderPaymentCallback = (req, res) => {
     console.log("Payment Calback - ", req.headers);
     const decode_payment = base64.decode(req.body.response);
     console.log("Decode Payment Response - ", decode_payment);
+    console.log("Decode Payment Response Data - ", decode_payment.data);
     const order_ID = decode_payment.data.merchantTransactionId;
     Order.findOne({ orderId: order_ID }).then((order, err) => {
         if (err) {
