@@ -120,89 +120,95 @@ exports.createOrder = (req, res) => {
 
     console.log("Order: ", req.body);
 
-    // const merchantOrderId = uuidv4();
+    const merchantOrderId = uuidv4();
 
-    // const newOrder = new Order();
-    // newOrder.orderId = merchantOrderId;
-    // newOrder.orderNotes = req.body.userOrderNote;
-    // newOrder.orderSubTotal = req.body.subTotal;
-    // newOrder.orderTotal = req.body.total;
-    // newOrder.orderisOffer = uuidv4();
-    // newOrder.orderBy = uuidv4();
-    // newOrder.orderUpdateWAPhone = req.body.userWAPhone;
+    const newOrder = new Order();
+    newOrder.orderId = merchantOrderId;
+    newOrder.orderNotes = req.body.userOrderNote;
+    newOrder.orderSubTotal = req.body.userOrderSubTotal;
+    newOrder.orderTotal = req.body.userOrderGrandTotal;
+    newOrder.orderisOffer = uuidv4();
+    newOrder.orderBy = uuidv4();
+    newOrder.orderUpdateWAPhone = req.body.userWAPhone;
 
-    // // Payment
-    // newOrder.paymentStatus = merchantOrderId;
-    // newOrder.paymentToken = uuidv4();
-    // newOrder.paymentTotal = req.body.paymentTotal;
+    // Payment
+    newOrder.paymentStatus = merchantOrderId;
+    newOrder.paymentToken = uuidv4();
+    newOrder.paymentTotal = req.body.userOrderGrandTotal;
     // newOrder.paymentMethod = req.body.paymentMethod;
 
 
-    // // Shipment
-    // newOrder.shipmentId = merchantOrderId;
-    // newOrder.shipmentPincode = req.body.orderPincode;
-    // newOrder.shipmentAddress = req.body.shipmentAddress;
-    // newOrder.shipmentCityTown = req.body.shipmentCityTown;
-    // newOrder.shipmentState = req.body.shipmentState;
-    // newOrder.shipmentToken = uuidv4();
+    // Shipment
+    newOrder.shipmentId = merchantOrderId;
+    newOrder.shipmentPincode = req.body.orderPincode;
+    newOrder.shipmentAddress = req.body.userAddress + ", " + req.body.userAddressTwo + ", " + req.body.userCityTown + ", " + req.body.userState;
+    newOrder.shipmentState = req.body.userState;
+    newOrder.shipmentCityTown = req.body.shipmentCityTown;
+    newOrder.shipmentState = req.body.userState;
+    newOrder.shipmentToken = uuidv4();
 
-    // newOrder.save().then((order, err) => {
-    //     if (err) {
-    //         return res.json({
-    //             error: err
-    //         })
-    //     }
-    //     if (!order) {
-    //         return res.json({
-    //             error: "Order: Failure"
-    //         })
-    //     }
+    newOrder.save().then((order, err) => {
+        if (err) {
+            return res.json({
+                error: err
+            })
+        }
+        if (!order) {
+            return res.json({
+                error: "Order: Failure"
+            })
+        }
+        console.log("Order Saved - ", order);
 
-    //     // Order Success
+        // Order Success
 
-    //     // Generate PhonePe Payment Body
-    //     const PhonePePaymentBody = {
-    //         "merchantId": "PGTESTPAYUAT65",
-    //         "merchantTransactionId": order.orderId,
-    //         "merchantUserId": "MUID123",
-    //         "amount": order.orderTotal,
-    //         "redirectUrl": "https://thehworld-service-commerce.onrender.com/api/web/payment/redirect",
-    //         "redirectMode": "POST",
-    //         "callbackUrl": "https://thehworld-service-commerce.onrender.com/api/web/payment/callback",
-    //         "mobileNumber": order.orderUpdateWAPhone,
-    //         "paymentInstrument": {
-    //             "type": "PAY_PAGE"
-    //         }
-    //     }
-    //     var encodedData = base64.encode(PhonePePaymentBody);
-    //     var salt = "c744c61e-b5a6-4be0-ac47-cc1b23788e60"
-    //     var x_verify_payload = encodedData + "/pg/v1/pay" + salt
-    //     var x_verify = SHA256(x_verify_payload) + "###1";
-
-
-    //     var redirect = "https://thehworld-service-commerce.onrender.com/api/web/payment/redirect";
-    //     var callback = "https://thehworld-service-commerce.onrender.com/api/web/payment/callback";
-
-    //     // Request to Payment Gateway
-    //     axios.post(`https://api-preprod.phonepe.com/apis/merchant-simulator/pg/v1/pay`, {
-    //         request: encodedData
-    //     }, {
-    //         headers: {
-    //             'Content-Type': 'application/json',
-    //             'X-VERIFY': x_verify
-    //         }
-    //     }).then((res) => {
-    //         console.log("Payment Res - ", res.body);
-    //     });
+        // Generate PhonePe Payment Body
+        const PhonePePaymentBody = {
+            "merchantId": "PGTESTPAYUAT65",
+            "merchantTransactionId": order.orderId,
+            "merchantUserId": "MUID123",
+            "amount": order.orderTotal,
+            "redirectUrl": "https://thehworld-service-commerce.onrender.com/api/web/payment/redirect",
+            "redirectMode": "POST",
+            "callbackUrl": "https://thehworld-service-commerce.onrender.com/api/web/payment/callback",
+            "mobileNumber": order.orderUpdateWAPhone,
+            "paymentInstrument": {
+                "type": "PAY_PAGE"
+            }
+        }
+        console.log("Generated Payment Body - ", PhonePePaymentBody);
+        var encodedData = base64.encode(PhonePePaymentBody);
+        console.log("Generated Payment Body Base64 - ", encodedData);
+        var salt = "c744c61e-b5a6-4be0-ac47-cc1b23788e60"
+        var x_verify_payload = encodedData + "/pg/v1/pay" + salt
+        console.log("x-verify Payload - ", x_verify_payload);
+        var x_verify = SHA256(x_verify_payload) + "###1";
+        console.log("x-verify  - ", x_verify);
 
 
+        var redirect = "https://thehworld-service-commerce.onrender.com/api/web/payment/redirect";
+        var callback = "https://thehworld-service-commerce.onrender.com/api/web/payment/callback";
+
+        // Request to Payment Gateway
+        axios.post(`https://api-preprod.phonepe.com/apis/merchant-simulator/pg/v1/pay`, {
+            request: encodedData
+        }, {
+            headers: {
+                'Content-Type': 'application/json',
+                'X-VERIFY': x_verify
+            }
+        }).then((res) => {
+            console.log("Payment Res - ", res.body);
+        });
 
 
-    // }).catch((err) => {
-    //     return res.json({
-    //         error: err
-    //     })
-    // })
+
+
+    }).catch((err) => {
+        return res.json({
+            error: err
+        })
+    })
 
 
 
