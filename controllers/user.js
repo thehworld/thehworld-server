@@ -177,7 +177,7 @@ exports.createOrder = (req, res) => {
             }
         }
         console.log("Generated Payment Body - ", PhonePePaymentBody);
-        var encodedData = base64.encode(PhonePePaymentBody);
+        var encodedData = base64.encode(JSON.stringify(PhonePePaymentBody));
         console.log("Generated Payment Body Base64 - ", encodedData);
         var salt = "c744c61e-b5a6-4be0-ac47-cc1b23788e60"
         var x_verify_payload = encodedData + "/pg/v1/pay" + salt
