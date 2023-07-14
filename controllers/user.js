@@ -200,7 +200,7 @@ exports.createOrder = (req, res) => {
                         "merchantUserId": "MUID123",
                         "amount": order.orderTotal * 100,
                         "redirectUrl": "https://vocal-cassata-37976e.netlify.app/order/payment",
-                        "redirectMode": "POST",
+                        "redirectMode": "REDIRECT",
                         "callbackUrl": "https://thehworld-service-commerce.onrender.com/api/web/payment/callback",
                         "mobileNumber": order.orderUpdateWAPhone,
                         "paymentInstrument": {
