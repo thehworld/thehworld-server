@@ -315,7 +315,7 @@ exports.userOrderPaymentCallback = (req, res) => {
             })
         }
         order.paymentResponse = decode_payment;
-        order.paymentResponse = decode_payment.data.paymentInstrument.type;
+        // order.paymentResponse = decode_payment.data.paymentInstrument.type;
         order.save().then((newOrder, err) => {
             if (err) {
                 return res.json({
@@ -323,6 +323,25 @@ exports.userOrderPaymentCallback = (req, res) => {
                 })
             }
             console.log("Payment Order -> ", newOrder);
+            User.findOne({ _id: newOrder.orderForUser }).then((user, err) => {
+                user.userCart = [];
+                user.save().then((cal, err) => {
+                    if (err) {
+                        return res.json({
+                            error: err
+                        })
+                    }
+                    return res.json({
+                        orderCycle: true,
+                        orderCart: cal
+                    })
+                });
+            }).catch((err) => {
+                return res.json({
+                    error: err
+                })
+            })
+
         });
     }).catch((error) => {
         return res.json({
