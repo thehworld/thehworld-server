@@ -300,9 +300,11 @@ exports.userOrderPaymentCallback = (req, res) => {
     console.log("Payment Calback - ", req.body);
     console.log("Payment Calback - ", req.headers);
     const decode_payment = base64.decode(req.body.response);
-    console.log("Decode Payment Response - ", decode_payment);
-    console.log("Decode Payment Response Data - ", decode_payment.data);
-    const order_ID = decode_payment.data.merchantTransactionId;
+    console.log("Decode Payment Response - ", JSON.parse(decode_payment));
+    const decode_payment_object = JSON.parse(decode_payment);
+    console.log("Decode Payment Response Data - ", decode_payment_object.data);
+    const order_ID = decode_payment_object.data.merchantTransactionId;
+
     Order.findOne({ orderId: order_ID }).then((order, err) => {
         if (err) {
             return res.json({
@@ -314,7 +316,7 @@ exports.userOrderPaymentCallback = (req, res) => {
                 error: "Order doesn't exist"
             })
         }
-        order.paymentResponse = decode_payment;
+        order.paymentResponse = decode_payment_object;
         // order.paymentResponse = decode_payment.data.paymentInstrument.type;
         order.save().then((newOrder, err) => {
             if (err) {
