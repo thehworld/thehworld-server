@@ -216,7 +216,7 @@ exports.createOrder = (req, res) => {
 
 
     }).catch((err) => {
-        console.log("Create Order Complete Error");
+        console.log("Create Order Complete Error", err);
         return res.json({
             error: err
         })
