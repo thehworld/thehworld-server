@@ -45,7 +45,7 @@ const paymentSchema = new mongoose.Schema({
     paymentMethod: {
         type: String,
         enum: ["CARD", "CASH", "COD", "UPI", "DEPT"],
-        default: "DEPT"
+        default: "UPI"
     }
 
 

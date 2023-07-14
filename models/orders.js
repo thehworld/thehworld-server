@@ -5,24 +5,29 @@ const { ObjectId } = mongoose.Schema;
 
 const orderSchema = new mongoose.Schema({
 
-    orderId: {
+    orderId: { // Payment MerchantOrderId
         type: String,
         unique: true
     },
 
-    orderShipmentStatus: {
-        type: ObjectId,
-        ref: "Shipment"
+    orderNotes: {
+        type: String
     },
 
-    orderPaymentStatus: {
-        type: ObjectId,
-        ref: "Payment"
+    orderIssueNotes: {
+        type: String
+    },
+
+    orderStatus: {
+        type: String,
+        enum: ["NEW", "ACCEPTED", "DISPATCHED", "OUTFORDELIVERY", "DELIVERED"],
+        default: "NEW"
     },
 
     orderIssueStatus: {
         type: String,
-        required: true
+        enum: ["NO", "NEW", "PENDING", "SOLVED"],
+        default: "NO"
     },
 
     orderSubTotal: {
@@ -40,9 +45,97 @@ const orderSchema = new mongoose.Schema({
     },
 
     orderBy: {
-        type: ObjectId,
-        ref: "User",
+        type: Object,
         required: true
+    },
+
+    orderUpdateWAPhone: {
+        type: String
+    },
+
+    // Payment
+
+    paymentId: {
+        type: String,
+        required: true,
+        unique: true
+    },
+
+    paymentStatus: {
+        type: String,
+        enum: ["INIT", "SUCCESS", "ERROR", "ISSUE"],
+        default: "INIT"
+    },
+
+    paymentToken: {
+        type: String,
+        required: true,
+        unique: true
+    },
+
+
+    paymentTotal: {
+        type: String,
+        required: true
+    },
+
+    paymentMethod: {
+        type: String,
+        enum: ["CARD", "CASH", "COD", "UPI", "DEPT"],
+        default: "UPI"
+    },
+
+
+
+    // Shipment
+
+    shipmentId: {
+        type: String,
+        required: true,
+        unique: true
+    },
+
+    shipmentPincode: {
+        type: String,
+        required: true
+    },
+
+    shipmentAddress: {
+        type: String,
+        required: true
+    },
+
+    shipmentCityTown: {
+        type: String,
+        required: true
+    },
+
+    shipmentState: {
+        type: String,
+        required: true
+    },
+
+    shipmentStatus: {
+        type: String,
+        enum: ["INIT", "SUCCESS", "ERROR", "ISSUE"],
+        default: "INIT"
+    },
+
+
+    shipmentFromLocation: {
+        type: { type: String },
+        coordinates: [Number],
+    },
+
+    shipmentToLocation: {
+        type: { type: String },
+        coordinates: [Number],
+    },
+
+    shipmentToken: {
+        type: String,
+        required: true,
+        unique: true
     }
 
 

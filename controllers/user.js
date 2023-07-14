@@ -2,8 +2,13 @@ const pigcolor = require('pigcolor');
 const { v4: uuidv4 } = require('uuid')
 const jwt = require('jsonwebtoken');
 const jwt_decode = require('jwt-decode');
+var base64 = require('base-64');
+var CryptoJS = require("crypto-js");
+var SHA256 = require("crypto-js/sha256");
+
 
 const User = require('../models/users');
+const Order = require('../models/orders');
 
 exports.userAuthGoogle = (req, res) => {
     pigcolor.box("User: Auth Google");
@@ -112,6 +117,82 @@ exports.getUserDetailToken = (req, res) => {
 
 exports.createOrder = (req, res) => {
     pigcolor.box("Create: Order");
+
+    const merchantOrderId = uuidv4();
+
+    const newOrder = new Order();
+    newOrder.orderId = merchantOrderId;
+    newOrder.orderNotes = req.body.orderNotes;
+    newOrder.orderSubTotal = req.body.subTotal;
+    newOrder.orderTotal = req.body.total;
+    newOrder.orderisOffer = uuidv4();
+    newOrder.orderBy = uuidv4();
+    newOrder.orderUpdateWAPhone = req.body.userWAPhone;
+
+    // Payment
+    newOrder.paymentStatus = merchantOrderId;
+    newOrder.paymentToken = uuidv4();
+    newOrder.paymentTotal = req.body.paymentTotal;
+    newOrder.paymentMethod = req.body.paymentMethod;
+
+
+    // Shipment
+    newOrder.shipmentId = merchantOrderId;
+    newOrder.shipmentPincode = req.body.orderPincode;
+    newOrder.shipmentAddress = req.body.shipmentAddress;
+    newOrder.shipmentCityTown = req.body.shipmentCityTown;
+    newOrder.shipmentState = req.body.shipmentState;
+    newOrder.shipmentToken = uuidv4();
+
+    newOrder.save().then((order, err) => {
+        if (err) {
+            return res.json({
+                error: err
+            })
+        }
+        if (!order) {
+            return res.json({
+                error: "Order: Failure"
+            })
+        }
+
+        // Order Success
+
+        // Generate PhonePe Payment Body
+        const PhonePePaymentBody = {
+            "merchantId": "PGTESTPAYUAT65",
+            "merchantTransactionId": order.orderId,
+            "merchantUserId": "MUID123",
+            "amount": order.orderTotal,
+            "redirectUrl": "https://webhook.site/redirect-url",
+            "redirectMode": "POST",
+            "callbackUrl": "https://webhook.site/callback-url",
+            "mobileNumber": order.orderUpdateWAPhone,
+            "paymentInstrument": {
+                "type": "PAY_PAGE"
+            }
+        }
+        var encodedData = base64.encode(PhonePePaymentBody);
+        var salt = "c744c61e-b5a6-4be0-ac47-cc1b23788e60"
+        var x_verify_payload = encodedData + "/pg/v1/pay" + salt
+        var x_verify = SHA256(x_verify_payload)
+
+        // Request to Payment Gateway
+
+
+
+
+
+    }).catch((err) => {
+        return res.json({
+            error: err
+        })
+    })
+
+
+
+
+
 
 
 

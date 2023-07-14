@@ -14,7 +14,7 @@ route.get('/get/user/details', getUserDetailToken);
 
 // User Create Order 
 
-route.post('/create/order', createOrder);
+route.post('/create/order', getUserInfoFromToken, createOrder);
 
 // User Order Payment
 

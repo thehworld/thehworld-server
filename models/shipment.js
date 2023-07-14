@@ -26,7 +26,6 @@ const shipmentSchema = new mongoose.Schema({
     shipmentOrder: {
         type: ObjectId,
         ref: "Order",
-        required: true,
         unique: true
     },
 
