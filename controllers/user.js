@@ -124,7 +124,7 @@ exports.createOrder = (req, res) => {
 
     // const newOrder = new Order();
     // newOrder.orderId = merchantOrderId;
-    // newOrder.orderNotes = req.body.orderNotes;
+    // newOrder.orderNotes = req.body.userOrderNote;
     // newOrder.orderSubTotal = req.body.subTotal;
     // newOrder.orderTotal = req.body.total;
     // newOrder.orderisOffer = uuidv4();

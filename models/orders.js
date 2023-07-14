@@ -10,6 +10,11 @@ const orderSchema = new mongoose.Schema({
         unique: true
     },
 
+    orderProduct: {
+        type: Object,
+        required: true
+    },
+
     orderNotes: {
         type: String
     },
