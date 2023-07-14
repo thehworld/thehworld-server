@@ -10,6 +10,11 @@ const orderSchema = new mongoose.Schema({
         unique: true
     },
 
+    orderForUser: {
+        type: String,
+        required: true
+    },
+
     orderProduct: {
         type: Object,
         required: true
@@ -86,10 +91,12 @@ const orderSchema = new mongoose.Schema({
 
     paymentMethod: {
         type: String,
-        enum: ["CARD", "CASH", "COD", "UPI", "DEPT"],
         default: "UPI"
     },
 
+    paymentResponse: {
+        type: Object
+    },
 
 
     // Shipment
