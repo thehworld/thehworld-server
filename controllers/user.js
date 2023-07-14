@@ -132,7 +132,7 @@ exports.createOrder = (req, res) => {
     newOrder.orderUpdateWAPhone = req.body.userWAPhone;
 
     // Payment
-    newOrder.paymentStatus = merchantOrderId;
+    newOrder.paymentId = merchantOrderId;
     newOrder.paymentToken = uuidv4();
     newOrder.paymentTotal = req.body.userOrderGrandTotal;
     // newOrder.paymentMethod = req.body.paymentMethod;
