@@ -202,7 +202,7 @@ exports.createOrder = (req, res) => {
             url: 'https://api-preprod.phonepe.com/apis/merchant-simulator/pg/v1/pay',
             headers: {
                 'Content-Type': 'application/json',
-                'X-VERIFY': toString(x_verify)
+                'X-VERIFY': x_verify
             },
             data: data
         };
