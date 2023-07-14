@@ -208,8 +208,15 @@ exports.createOrder = (req, res) => {
         };
 
         axios.request(config).then((response) => {
-            console.log(JSON.stringify(response.data));
-            console.log("Payment Res - ", response);
+            console.log(response.data);
+            return res.json({
+                    paymentURlredirect: response.data.instrumentResponse,
+                    paymentObject: response.data,
+                    paymentStatus: true
+                })
+                // console.log("Payment Res - ", response);
+
+
         }).catch((err) => {
             console.log("Error - ", err);
         });
