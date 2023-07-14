@@ -5,7 +5,7 @@ const jwt_decode = require('jwt-decode');
 var base64 = require('base-64');
 var CryptoJS = require("crypto-js");
 var SHA256 = require("crypto-js/sha256");
-
+const { Base64 } = require('js-base64');
 
 const User = require('../models/users');
 const Order = require('../models/orders');
@@ -177,7 +177,7 @@ exports.createOrder = (req, res) => {
             }
         }
         console.log("Generated Payment Body - ", PhonePePaymentBody);
-        var encodedData = base64.encode(PhonePePaymentBody);
+        var encodedData = Base64.encode(PhonePePaymentBody);
         console.log("Generated Payment Body Base64 - ", encodedData);
         var salt = "c744c61e-b5a6-4be0-ac47-cc1b23788e60"
         var x_verify_payload = encodedData + "/pg/v1/pay" + salt
@@ -199,6 +199,8 @@ exports.createOrder = (req, res) => {
             }
         }).then((res) => {
             console.log("Payment Res - ", res.body);
+        }).catch((err) => {
+            console.log("Error - ", err);
         });
 
 
