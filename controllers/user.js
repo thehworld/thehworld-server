@@ -176,6 +176,15 @@ exports.createOrder = (req, res) => {
 
 
                 // Order Created Success
+                // Handle Missing Fileds In User Profile
+                if (!user.contactNumber)
+                    user.contactNumber = req.body.userPhone
+                if (!user.contactWAForAuto)
+                    user.contactWAForAuto = req.body.userWAPhone
+                if (!user.userAddresses)
+                    user.userAddresses = req.body.userAddress + ", " + req.body.userAddressTwo + ", " + req.body.userCityTown + ", " + req.body.userState;
+
+
                 let user_order_list = user.userOrders;
                 user_order_list.push(order._id);
                 user.userOrders = user_order_list;

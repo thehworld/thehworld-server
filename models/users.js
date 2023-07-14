@@ -36,12 +36,20 @@ const userSchema = new mongoose.Schema({
         type: String
     },
 
+    contactWAForAuto: {
+        type: String
+    },
+
     userProfilePic: {
         type: String
     },
 
     userGoogleName: {
         type: String
+    },
+
+    userAddresses: {
+        type: [String]
     },
 
     userLocation: {
