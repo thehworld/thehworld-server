@@ -167,7 +167,7 @@ exports.createOrder = (req, res) => {
             "merchantId": "PGTESTPAYUAT65",
             "merchantTransactionId": order.orderId,
             "merchantUserId": "MUID123",
-            "amount": order.orderTotal,
+            "amount": order.orderTotal * 100,
             "redirectUrl": "https://thehworld-service-commerce.onrender.com/api/web/payment/redirect",
             "redirectMode": "POST",
             "callbackUrl": "https://thehworld-service-commerce.onrender.com/api/web/payment/callback",
@@ -190,14 +190,22 @@ exports.createOrder = (req, res) => {
         var callback = "https://thehworld-service-commerce.onrender.com/api/web/payment/callback";
 
         // Request to Payment Gateway
-        axios.post(`https://api-preprod.phonepe.com/apis/merchant-simulator/pg/v1/pay`, {
-            request: encodedData
-        }, {
+
+        let data = JSON.stringify({
+            "request": encodedData
+        });
+        let config = {
+            method: 'post',
+            maxBodyLength: Infinity,
+            url: 'https://api-preprod.phonepe.com/apis/merchant-simulator/pg/v1/pay',
             headers: {
                 'Content-Type': 'application/json',
-                'X-VERIFY': x_verify
-            }
-        }).then((res) => {
+                'X-VERIFY': toString(x_verify)
+            },
+            data: data
+        };
+
+        axios.request(config).then((res) => {
             console.log("Payment Res - ", res.body);
         }).catch((err) => {
             console.log("Error - ", err);
@@ -207,6 +215,7 @@ exports.createOrder = (req, res) => {
 
 
     }).catch((err) => {
+        console.log("Create Order Complete Error");
         return res.json({
             error: err
         })
