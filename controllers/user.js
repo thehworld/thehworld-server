@@ -102,22 +102,25 @@ exports.getUserAuthFromToken = (req, res) => {
                                 status: false
                             })
                         }
-                        return res.json({
-                            status: true,
-                            user: user,
-                            orders: orders
-                        })
+                        if (orders.length > 0)
+                            return res.json({
+                                status: true,
+                                user: user,
+                                orders: orders
+                            })
 
-                    }).catch(err => {
+                    }).catch((err) => {
                         return res.json({
                             status: false
                         })
                     })
+                } else {
+                    return res.json({
+                        status: true,
+                        user: user
+                    })
                 }
-                return res.json({
-                    status: true,
-                    user: user
-                })
+
 
             }
         }).catch((err) => {
