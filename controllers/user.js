@@ -228,7 +228,7 @@ exports.createOrder = (req, res) => {
 
                     // Generate PhonePe Payment Body
                     const PhonePePaymentBody = {
-                        "merchantId": "THEHWORLDONLINE",
+                        "merchantId": "PGTESTPAYUAT65",
                         "merchantTransactionId": order.orderId,
                         "merchantUserId": "MUID123",
                         "amount": order.orderTotal * 100,
@@ -243,7 +243,7 @@ exports.createOrder = (req, res) => {
                     console.log("Generated Payment Body - ", PhonePePaymentBody);
                     var encodedData = base64.encode(JSON.stringify(PhonePePaymentBody));
                     console.log("Generated Payment Body Base64 - ", encodedData);
-                    var salt = process.env.PHONE_PE_SALT;
+                    var salt = "c744c61e-b5a6-4be0-ac47-cc1b23788e60"
                     var x_verify_payload = encodedData + "/pg/v1/pay" + salt
                     console.log("x-verify Payload - ", x_verify_payload);
                     var x_verify = SHA256(x_verify_payload) + "###1";
@@ -261,7 +261,7 @@ exports.createOrder = (req, res) => {
                     let config = {
                         method: 'post',
                         maxBodyLength: Infinity,
-                        url: 'https://api.phonepe.com/apis/hermes/pg/v1/pay',
+                        url: 'https://api-preprod.phonepe.com/apis/merchant-simulator/pg/v1/pay',
                         headers: {
                             'Content-Type': 'application/json',
                             'X-VERIFY': x_verify
