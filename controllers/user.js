@@ -516,3 +516,23 @@ exports.addToCartRemove = (req, res) => {
         });
     }
 }
+
+
+// ?? All Users Data
+exports.getAllUsersDetails = (req, res) => {
+    pigcolor.box("Get All: Users");
+    User.find({}).then((allUsers, error) => {
+        if (error) {
+            return res.json({
+                error: error
+            })
+        }
+        return res.json({
+            allUsers: allUsers
+        })
+    }).catch((err) => {
+        return res.json({
+            error: err
+        })
+    })
+}
