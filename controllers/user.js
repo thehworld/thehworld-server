@@ -112,7 +112,10 @@ exports.getUserAuthFromToken = (req, res) => {
                         })
                     })
                 }
-
+                return res.json({
+                    status: true,
+                    user: user
+                })
 
             }
         }).catch((err) => {
