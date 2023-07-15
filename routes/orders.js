@@ -3,7 +3,6 @@ const { getAllOrders } = require('../controllers/orders');
 const route = express.Router();
 
 
-route.post("/order/new", createOrder);
 
 route.get("/get/all/orders", getAllOrders);
 
