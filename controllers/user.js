@@ -96,7 +96,7 @@ exports.getUserAuthFromToken = (req, res) => {
                 if (user.userOrders.length > 0) {
                     console.log("User has orders");
                     Order.find({}).where("_id").in(user.userOrder).exec().then((orders, err) => {
-                        console.log("Orders - ", orders);
+                        console.log("Orders - ", orders, err);
                         if (err) {
                             return res.json({
                                 status: false
