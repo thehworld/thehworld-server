@@ -41,6 +41,28 @@ exports.getAllOrders = (req, res) => {
     })
 }
 
+exports.getAOrderDetail = (req, res) => {
+    pigcolor.box("Get A: Order Detail");
+    console.log(req.params);
+    Order.findOne({ _id: req.params.orderID }).then((order, err) => {
+        if (err) {
+            return res.json({
+                order: order
+            })
+        }
+        if (!order) {
+            return res.json({
+                error: "Order Id not Found"
+            })
+        }
+        return res.json({
+            order: order
+        })
+    }).catch((error) => {
+        console.log("Error - ", error);
+    });
+}
+
 
 exports.getAOrderFromUser = (req, res) => {
     pigcolor.box("Get A: Order");
