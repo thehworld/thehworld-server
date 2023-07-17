@@ -1,5 +1,5 @@
 const express = require('express');
-const { userAuthGoogle, getUserAuthFromToken, getUserDetailToken, getUserInfoFromToken, addToCartRemove, userOrderPaymentRedirect, userOrderPaymentCallback, createOrder, getAllUsersDetails } = require('../controllers/user');
+const { userAuthGoogle, getUserAuthFromToken, getUserDetailToken, getUserInfoFromToken, addToCartRemove, userOrderPaymentRedirect, userOrderPaymentCallback, createOrder, getAllUsersDetails, getAUserDetails } = require('../controllers/user');
 const route = express.Router();
 
 
@@ -32,5 +32,6 @@ route.post('/user/add/cart', getUserInfoFromToken, addToCartRemove);
 // Get All Users
 
 route.get('/users/get/all', getAllUsersDetails);
+route.get('/get/a/user/:userId', getAUserDetails);
 
 module.exports = route;

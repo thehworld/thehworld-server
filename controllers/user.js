@@ -536,3 +536,24 @@ exports.getAllUsersDetails = (req, res) => {
         })
     })
 }
+
+exports.getAUserDetails = (req, res) => {
+    pigcolor.box("Get: A User");
+    User.findOne({ userId: req.params.userId }).then((user, err) => {
+        if (err) {
+            return res.json({
+                error: err
+            })
+        }
+        if (!user) {
+            return res.json({
+                msg: "User Not Available"
+            })
+        }
+        return res.json({
+            user: user
+        })
+    }).catch((err) => {
+        console.log("Error - ", err);
+    });
+}
