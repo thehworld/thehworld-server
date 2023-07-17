@@ -64,6 +64,21 @@ exports.getAOrderDetail = (req, res) => {
 }
 
 
+
+
 exports.getAOrderFromUser = (req, res) => {
     pigcolor.box("Get A: Order");
+}
+
+
+
+
+// Order Status Changer
+
+exports.changeOrderStatus = (req, res) => {
+    pigcolor.box("Order: Status Change");
+
+
+
+
 }
