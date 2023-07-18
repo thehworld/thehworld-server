@@ -321,6 +321,27 @@ exports.createOrder = (req, res) => {
 
 }
 
+exports.getOrdersUnderUser = (req, res) => {
+    pigcolor.box("Get: A Order From User");
+    const ordersIds = req.body.orders;
+    Order.find({}).where("_id").in(ordersIds).exec().then((orders, err) => {
+        if (err) {
+            return res.json({
+                error: err
+            })
+        }
+        if (!orders) {
+            return res.json({
+                msg: "Orders Is Empty!!"
+            })
+        }
+        return res.json({
+            orders: orders
+        })
+    }).catch((err) => {
+        console.log("Error - ", err);
+    });
+}
 
 // ?? User Payment
 
@@ -515,6 +536,49 @@ exports.addToCartRemove = (req, res) => {
             console.log("Error - ", err);
         });
     }
+}
+
+exports.removeCartFromCartSection = (req, res) => {
+    pigcolor.box("Remove: Product from Cart");
+    console.log(req.body);
+    console.log(req.user);
+    // const userID = req.user._id;
+    // User.find({ useId: userID }).then((user, err) => {
+    //     if (err) {
+    //         return res.json({
+    //             error: err
+    //         })
+    //     }
+    //     if (!user) {
+    //         return res.json({
+    //             error: "User Not Available"
+    //         })
+    //     }
+
+    //     const temp_cart = req.user.userCart;
+    //     let tempt_cart_index_to_remove = temp_cart.findIndex((c) => c.id === req.body.id);
+    //     temp_cart.splice(tempt_cart_index_to_remove, 1);
+    //     user.userCart = temp_cart;
+    //     user.save().then((cartuser, err) => {
+    //         if (err) {
+    //             return res.json({
+    //                 error: err
+    //             })
+    //         }
+    //         return res.json({
+    //             cartuser: cartuser
+    //         })
+    //     }).catch((err) => {
+    //         return res.json({
+    //             error: err
+    //         })
+    //     })
+
+    // }).catch((error) => {
+    //     return res.json({
+    //         error: "User Not Available"
+    //     })
+    // });
 }
 
 
