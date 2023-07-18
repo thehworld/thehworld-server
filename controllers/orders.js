@@ -1,5 +1,6 @@
 const pigcolor = require('pigcolor');
 const Order = require("../models/orders");
+const User = require("../models/users");
 
 exports.createOrder = (req, res) => {
     pigcolor.box("Create: New Order");
@@ -55,9 +56,23 @@ exports.getAOrderDetail = (req, res) => {
                 error: "Order Id not Found"
             })
         }
-        return res.json({
-            order: order
-        })
+        User.findOne({ _id: order.orderForUser }).then((user, err) => {
+            if (err) {
+                return res.json({
+                    order: order
+                })
+            }
+            return res.json({
+                order: order,
+                user: user
+            })
+        }).catch((err) => {
+            return res.json({
+                order: order
+            })
+        });
+
+
     }).catch((error) => {
         console.log("Error - ", error);
     });

@@ -15,7 +15,7 @@ route.post("/edit/category", updateCategory);
 
 
 
-route.delete("/delete/category", deleteCategory);
+route.post("/delete/category", deleteCategory);
 
 // ** Category
 route.get("/get/all/categories", getAllCategory);

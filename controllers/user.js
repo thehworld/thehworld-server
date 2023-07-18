@@ -639,9 +639,33 @@ exports.getAUserDetails = (req, res) => {
                 msg: "User Not Available"
             })
         }
-        return res.json({
-            user: user
-        })
+        if (user.userOrders.length > 0) {
+            Order.find({}).where("_id").in(user.userOrders).exec().then((orders, err) => {
+                if (err) {
+                    return res.json({
+                        error: err
+                    })
+                }
+                if (!orders) {
+                    return res.json({
+                        error: "Order list not showing"
+                    })
+                } else {
+                    return res.json({
+                        user: user,
+                        orders: orders
+                    })
+                }
+            }).catch((err) => {
+                return res.json({
+                    error: err
+                })
+            })
+
+        } else
+            return res.json({
+                user: user
+            })
     }).catch((err) => {
         console.log("Error - ", err);
     });

@@ -118,7 +118,8 @@ exports.updateCategory = (req, res) => {
 
 exports.deleteCategory = (req, res) => {
     Pig.box("DELETE: Category");
-    const cateId = req.body.cateId;
+    const cateId = req.body.cate;
+    console.log(req.body.cate);
     Category.findByIdAndDelete({ _id: cateId })
         .then((cate, err) => {
             if (err) {
