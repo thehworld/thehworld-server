@@ -420,7 +420,7 @@ exports.getUserInfoFromToken = (req, res, next) => {
     const user_token = req.headers.token;
     const user_data = jwt_decode(user_token);
     if (user_data) {
-        console.log(user_data);
+        // console.log(user_data);
         User.findOne({ userId: user_data.user.userId }).then((user, err) => {
             if (err) {
                 return res.json({
@@ -540,45 +540,48 @@ exports.addToCartRemove = (req, res) => {
 
 exports.removeCartFromCartSection = (req, res) => {
     pigcolor.box("Remove: Product from Cart");
-    console.log(req.body);
-    console.log(req.user);
-    // const userID = req.user._id;
-    // User.find({ useId: userID }).then((user, err) => {
-    //     if (err) {
-    //         return res.json({
-    //             error: err
-    //         })
-    //     }
-    //     if (!user) {
-    //         return res.json({
-    //             error: "User Not Available"
-    //         })
-    //     }
+    // console.log(req.body);
+    // console.log(req.user);
+    User.findOne({ useId: req.user.userId }).then((user, err) => {
+        console.log("User - ", user, err);
 
-    //     const temp_cart = req.user.userCart;
-    //     let tempt_cart_index_to_remove = temp_cart.findIndex((c) => c.id === req.body.id);
-    //     temp_cart.splice(tempt_cart_index_to_remove, 1);
-    //     user.userCart = temp_cart;
-    //     user.save().then((cartuser, err) => {
-    //         if (err) {
-    //             return res.json({
-    //                 error: err
-    //             })
-    //         }
-    //         return res.json({
-    //             cartuser: cartuser
-    //         })
-    //     }).catch((err) => {
-    //         return res.json({
-    //             error: err
-    //         })
-    //     })
+        if (err) {
+            return res.json({
+                error: err
+            })
+        }
+        if (!user) {
+            return res.json({
+                error: "User Not Available"
+            })
+        }
+        const temp_cart = user.userCart;
+        let tempt_cart_index_to_remove = temp_cart.findIndex((c) => c.id === req.body.id);
+        temp_cart.splice(tempt_cart_index_to_remove, 1);
+        console.log("Cart Index - ", temp_cart);
+        user.userCart = temp_cart;
+        user.save().then((cartuser, err) => {
+            console.log("Cart New - ", cartuser, err);
 
-    // }).catch((error) => {
-    //     return res.json({
-    //         error: "User Not Available"
-    //     })
-    // });
+            if (err) {
+                return res.json({
+                    error: err
+                })
+            }
+            return res.json({
+                cartuser: cartuser
+            })
+        }).catch((err) => {
+            return res.json({
+                error: err
+            })
+        })
+
+    }).catch((error) => {
+        return res.json({
+            error: "User Not Available"
+        })
+    });
 }
 
 
