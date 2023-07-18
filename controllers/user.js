@@ -235,7 +235,6 @@ exports.createOrder = (req, res) => {
                 user.userOrders = user_order_list;
                 user.save().then((userOrder, err) => {
                     console.log("User Order Test - ", userOrder);
-                    return 1;
                     if (err) {
                         return res.json({
                             error: err
