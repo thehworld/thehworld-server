@@ -145,7 +145,7 @@ exports.createOrder = (req, res) => {
     pigcolor.box("Create: Order");
 
     console.log("Order: ", req.body);
-    console.log("USer: ", req.user);
+    // console.log("USer: ", req.user);
 
 
     const user_token = req.headers.token;
@@ -153,7 +153,7 @@ exports.createOrder = (req, res) => {
     if (user_data) {
         console.log(user_data);
         User.findOne({ userId: user_data.user.userId }).then((user, err) => {
-            console.log("User - ", user);
+            // console.log("User - ", user);
 
 
 
@@ -179,10 +179,10 @@ exports.createOrder = (req, res) => {
             newOrder.orderForUser = user._id;
             // Shipment
             newOrder.shipmentId = merchantOrderId;
-            newOrder.shipmentPincode = req.body.userPincode;
+            newOrder.shipmentPincode = req.body.userAddressPincode;
             newOrder.shipmentAddress = req.body.userAddress + ", " + req.body.userAddressTwo + ", " + req.body.userCityTown + ", " + req.body.userState;
             newOrder.shipmentState = req.body.userState;
-            newOrder.shipmentCityTown = req.body.userCityTown;
+            newOrder.shipmentCityTown = req.body.userTown;
             newOrder.shipmentToken = uuidv4();
 
             newOrder.save().then((order, err) => {
@@ -196,7 +196,7 @@ exports.createOrder = (req, res) => {
                         error: "Order: Failure"
                     })
                 }
-                console.log("Order Saved - ", order);
+                // console.log("Order Saved - ", order);
 
 
                 // Order Created Success
@@ -205,14 +205,37 @@ exports.createOrder = (req, res) => {
                     user.contactNumber = req.body.userPhone
                 if (!user.contactWAForAuto)
                     user.contactWAForAuto = req.body.userWAPhone
-                if (!user.userAddresses)
-                    user.userAddresses = req.body.userAddress + ", " + req.body.userAddressTwo + ", " + req.body.userCityTown + ", " + req.body.userState;
+                if (!user.userState)
+                    user.userState = req.body.userState
+                if (!user.userTown)
+                    user.userTown = req.body.userTown
+                if (!user.userHome)
+                    user.userHome = req.body.userHome
+                if (!user.userAddressPincode)
+                    user.userAddressPincode = req.body.userAddressPincode
+                if (user.userAddresses.length < 1 || user.userAddresses === undefined) {
+                    console.log("user.userAddress", user.userAddress);
+
+                    let address_new = req.body.userAddress + ", " + req.body.userAddressTwo + ", " + req.body.userCityTown + ", " + req.body.userState;
+                    let address_list = []
+                    address_list.push(address_new);
+                    user.userAddresses = address_list;
+                } else if (user.userAddresses.length >= 1) {
+                    let address_lists = [];
+                    console.log(user.userAddresses);
+                    address_lists = user.userAddresses;
+                    let address_new = req.body.userAddress + ", " + req.body.userAddressTwo + ", " + req.body.userCityTown + ", " + req.body.userState;
+                    address_lists.push(address_new);
+                    user.userAddresses = address_lists;
+                }
 
 
                 let user_order_list = user.userOrders;
                 user_order_list.push(order._id);
                 user.userOrders = user_order_list;
                 user.save().then((userOrder, err) => {
+                    console.log("User Order Test - ", userOrder);
+                    return 1;
                     if (err) {
                         return res.json({
                             error: err
