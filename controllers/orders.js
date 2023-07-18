@@ -75,9 +75,26 @@ exports.getAOrderFromUser = (req, res) => {
 
 // Order Status Changer
 
-exports.changeOrderStatus = (req, res) => {
-    pigcolor.box("Order: Status Change");
-
+exports.getAllOrderBasedOnStatus = (req, res) => {
+    pigcolor.box("Get Order: Status Based Change");
+    console.log(req.body);
+    Order.find({ orderStatus: req.body.status.status }).then((order, err) => {
+        if (err) {
+            return res.json({
+                error: err
+            })
+        }
+        console.log(order);
+        return res.json({
+            order: order
+        })
+    }).catch((err) => {
+        if (err) {
+            return res.json({
+                error: err
+            })
+        }
+    })
 
 
 
