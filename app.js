@@ -18,7 +18,7 @@ app.use(cookieParser());
 
 const corsOptions = {
     AccessControlAllowOrigin: '*',
-    origin: ['https://vocal-cassata-37976e.netlify.app', 'http://localhost:3000'],
+    origin: ['https://vocal-cassata-37976e.netlify.app', 'http://localhost:3000', "https://thehworld.in/", 'http://localhost:3001'],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true
 }
