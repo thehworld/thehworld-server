@@ -99,3 +99,47 @@ exports.getAllOrderBasedOnStatus = (req, res) => {
 
 
 }
+
+exports.changeOrderStatus = (req, res) => {
+    pigcolor.box("Change: Order Status");
+    console.log(req.body);
+    Order.findOne({ _id: req.body.status.id }).then((order, err) => {
+        if (err) {
+            return res.json({
+                error: err
+            })
+        }
+        console.log(order);
+        order.orderStatus = req.body.status.status;
+        order.save().then((newOrder, err) => {
+
+            if (err) {
+                return res.json({
+                    error: err
+                })
+            }
+            if (!newOrder) {
+                return res.json({
+                    error: "Order don't exist"
+                })
+            }
+
+            return res.json({
+                order: newOrder
+            })
+
+        }).catch((error) => {
+            return res.json({
+                error: error
+            })
+        });
+
+    }).catch((err) => {
+        if (err) {
+            return res.json({
+                error: err
+            })
+        }
+    })
+
+}
