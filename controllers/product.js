@@ -103,6 +103,9 @@ exports.createProduct = (req, res) => {
     const newProduct = new Product();
 
 
+    console.log(req.body);
+
+
     newProduct.productId = uuidv4();
     newProduct.productName = req.body.productName;
     newProduct.productCategory = req.body.productCategory;
