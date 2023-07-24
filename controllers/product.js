@@ -145,7 +145,7 @@ exports.editProduct = (req, res) => {
     Pig.box("EDIT: Product");
     const prodId = req.body.productId;
     Product.findByIdAndUpdate({ _id: prodId }, {
-            productId: uuidv4(),
+            productId: req.body.productId,
             productName: req.body.productName,
             productCategory: req.body.productCategory,
             productPrice: req.body.productPrice,

@@ -147,168 +147,181 @@ exports.createOrder = (req, res) => {
     console.log("Order: ", req.body);
     // console.log("USer: ", req.user);
 
-
-    const user_token = req.headers.token;
-    const user_data = jwt_decode(user_token);
-    if (user_data) {
-        console.log(user_data);
-        User.findOne({ userId: user_data.user.userId }).then((user, err) => {
-            // console.log("User - ", user);
-
-
-
-            const merchantOrderId = uuidv4();
-
-            const newOrder = new Order();
-            newOrder.orderId = merchantOrderId;
-            newOrder.orderNotes = req.body.userOrderNote;
-            newOrder.orderSubTotal = req.body.userOrderSubTotal;
-            newOrder.orderTotal = req.body.userOrderGrandTotal;
-            newOrder.orderisOffer = uuidv4();
-            newOrder.orderBy = uuidv4();
-            newOrder.orderUpdateWAPhone = req.body.userWAPhone;
-            newOrder.orderProduct = req.body.userOrderProduct;
-
-            // Payment
-            newOrder.paymentId = merchantOrderId;
-            newOrder.paymentToken = uuidv4();
-            newOrder.paymentTotal = req.body.userOrderGrandTotal;
-            // newOrder.paymentMethod = req.body.paymentMethod;
-
-            // *++ User 
-            newOrder.orderForUser = user._id;
-            // Shipment
-            newOrder.shipmentId = merchantOrderId;
-            newOrder.shipmentPincode = req.body.userAddressPincode;
-            newOrder.shipmentAddress = req.body.userAddress + ", " + req.body.userAddressTwo + ", " + req.body.userCityTown + ", " + req.body.userState;
-            newOrder.shipmentState = req.body.userState;
-            newOrder.shipmentCityTown = req.body.userTown;
-            newOrder.shipmentToken = uuidv4();
-
-            newOrder.save().then((order, err) => {
-                if (err) {
-                    return res.json({
-                        error: err
-                    })
-                }
-                if (!order) {
-                    return res.json({
-                        error: "Order: Failure"
-                    })
-                }
-                // console.log("Order Saved - ", order);
+    if (req.body.paymentOptions === "CARD") {
+        const user_token = req.headers.token;
+        const user_data = jwt_decode(user_token);
+        if (user_data) {
+            console.log(user_data);
+            User.findOne({ userId: user_data.user.userId }).then((user, err) => {
+                // console.log("User - ", user);
 
 
-                // Order Created Success
-                // Handle Missing Fileds In User Profile
-                if (!user.contactNumber)
-                    user.contactNumber = req.body.userPhone
-                if (!user.contactWAForAuto)
-                    user.contactWAForAuto = req.body.userWAPhone
-                if (!user.userState)
-                    user.userState = req.body.userState
-                if (!user.userTown)
-                    user.userTown = req.body.userTown
-                if (!user.userHome)
-                    user.userHome = req.body.userHome
-                if (!user.userAddressPincode)
-                    user.userAddressPincode = req.body.userAddressPincode
-                if (user.userAddresses.length < 1 || user.userAddresses === undefined) {
-                    console.log("user.userAddress", user.userAddress);
 
-                    let address_new = req.body.userAddress + ", " + req.body.userAddressTwo + ", " + req.body.userCityTown + ", " + req.body.userState;
-                    let address_list = []
-                    address_list.push(address_new);
-                    user.userAddresses = address_list;
-                } else if (user.userAddresses.length >= 1) {
-                    let address_lists = [];
-                    console.log(user.userAddresses);
-                    address_lists = user.userAddresses;
-                    let address_new = req.body.userAddress + ", " + req.body.userAddressTwo + ", " + req.body.userCityTown + ", " + req.body.userState;
-                    address_lists.push(address_new);
-                    user.userAddresses = address_lists;
-                }
+                const merchantOrderId = uuidv4();
 
+                const newOrder = new Order();
+                newOrder.orderId = merchantOrderId;
+                newOrder.orderNotes = req.body.userOrderNote;
 
-                let user_order_list = user.userOrders;
-                user_order_list.push(order._id);
-                user.userOrders = user_order_list;
-                user.save().then((userOrder, err) => {
-                    console.log("User Order Test - ", userOrder);
+                newOrder.orderSubTotal = req.body.userOrderSubTotal;
+                newOrder.orderTotal = req.body.userOrderGrandTotal;
+                newOrder.orderisOffer = uuidv4();
+                newOrder.orderBy = uuidv4();
+                newOrder.orderUpdateWAPhone = req.body.userWAPhone;
+                newOrder.orderProduct = req.body.userOrderProduct;
+
+                // Payment
+                newOrder.paymentId = merchantOrderId;
+                newOrder.paymentToken = uuidv4();
+                newOrder.paymentTotal = req.body.userOrderGrandTotal;
+                // newOrder.paymentMethod = req.body.paymentMethod;
+
+                // *++ User 
+                newOrder.orderForUser = user._id;
+                // Shipment
+                newOrder.shipmentId = merchantOrderId;
+                newOrder.shipmentPincode = req.body.userAddressPincode;
+                newOrder.shipmentAddress = req.body.userAddress + ", " + req.body.userAddressTwo + ", " + req.body.userCityTown + ", " + req.body.userState;
+                newOrder.shipmentState = req.body.userState;
+                newOrder.shipmentCityTown = req.body.userTown;
+                newOrder.shipmentToken = uuidv4();
+
+                newOrder.save().then((order, err) => {
                     if (err) {
                         return res.json({
                             error: err
                         })
                     }
-                    if (!userOrder) {
+                    if (!order) {
+                        return res.json({
+                            error: "Order: Failure"
+                        })
+                    }
+                    // console.log("Order Saved - ", order);
+
+
+                    // Order Created Success
+                    // Handle Missing Fileds In User Profile
+                    if (!user.contactNumber)
+                        user.contactNumber = req.body.userPhone
+                    if (!user.contactWAForAuto)
+                        user.contactWAForAuto = req.body.userWAPhone
+                    if (!user.userState)
+                        user.userState = req.body.userState
+                    if (!user.userTown)
+                        user.userTown = req.body.userTown
+                    if (!user.userHome)
+                        user.userHome = req.body.userHome
+                    if (!user.userAddressPincode)
+                        user.userAddressPincode = req.body.userAddressPincode
+                    if (user.userAddresses.length < 1 || user.userAddresses === undefined) {
+                        console.log("user.userAddress", user.userAddress);
+
+                        let address_new = req.body.userAddress + ", " + req.body.userAddressTwo + ", " + req.body.userCityTown + ", " + req.body.userState;
+                        let address_list = []
+                        address_list.push(address_new);
+                        user.userAddresses = address_list;
+                    } else if (user.userAddresses.length >= 1) {
+                        let address_lists = [];
+                        console.log(user.userAddresses);
+                        address_lists = user.userAddresses;
+                        let address_new = req.body.userAddress + ", " + req.body.userAddressTwo + ", " + req.body.userCityTown + ", " + req.body.userState;
+                        address_lists.push(address_new);
+                        user.userAddresses = address_lists;
+                    }
+
+
+                    let user_order_list = user.userOrders;
+                    user_order_list.push(order._id);
+                    user.userOrders = user_order_list;
+                    user.save().then((userOrder, err) => {
+                        console.log("User Order Test - ", userOrder);
+                        if (err) {
+                            return res.json({
+                                error: err
+                            })
+                        }
+                        if (!userOrder) {
+                            return res.json({
+                                error: err
+                            })
+                        }
+
+                        // Payment Block Begins Here
+
+                        // Generate PhonePe Payment Body
+                        const PhonePePaymentBody = {
+                            "merchantId": "THEHWORLDONLINE",
+                            "merchantTransactionId": order.orderId,
+                            "merchantUserId": "MUID123",
+                            "amount": order.orderTotal * 100,
+                            "redirectUrl": "https://thehworld.in/order/payment",
+                            "redirectMode": "REDIRECT",
+                            "callbackUrl": "https://thehworld-service-commerce.onrender.com/api/web/payment/callback",
+                            "mobileNumber": order.orderUpdateWAPhone,
+                            "paymentInstrument": {
+                                "type": "PAY_PAGE"
+                            }
+                        }
+                        console.log("Generated Payment Body - ", PhonePePaymentBody);
+                        var encodedData = base64.encode(JSON.stringify(PhonePePaymentBody));
+                        console.log("Generated Payment Body Base64 - ", encodedData);
+                        var salt = "17cfc168-1045-43cb-88b1-ad26c042f233"
+                        var x_verify_payload = encodedData + "/pg/v1/pay" + salt
+                        console.log("x-verify Payload - ", x_verify_payload);
+                        var x_verify = SHA256(x_verify_payload) + "###1";
+                        console.log("x-verify  - ", x_verify);
+
+
+                        var redirect = "https://thehworld-service-commerce.onrender.com/api/web/payment/redirect";
+                        var callback = "https://thehworld-service-commerce.onrender.com/api/web/payment/callback";
+
+                        // Request to Payment Gateway
+
+                        let data = JSON.stringify({
+                            "request": encodedData
+                        });
+                        let config = {
+                            method: 'post',
+                            maxBodyLength: Infinity,
+                            url: 'https://api.phonepe.com/apis/hermes/pg/v1/pay',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-VERIFY': x_verify
+                            },
+                            data: data
+                        };
+
+                        axios.request(config).then((response) => {
+                            console.log(response.data);
+                            return res.json({
+                                    paymentURlredirect: response.data.instrumentResponse,
+                                    paymentObject: response.data,
+                                    paymentStatus: true
+                                })
+                                // console.log("Payment Res - ", response);
+
+
+                        }).catch((err) => {
+                            console.log("Error - ", err);
+                        });
+
+
+                        // Payment Block Ends Here
+
+
+                    }).catch((error) => {
+                        onsole.log("User Order Update Error", err);
                         return res.json({
                             error: err
                         })
-                    }
+                    })
 
 
 
-                    // Generate PhonePe Payment Body
-                    const PhonePePaymentBody = {
-                        "merchantId": "THEHWORLDONLINE",
-                        "merchantTransactionId": order.orderId,
-                        "merchantUserId": "MUID123",
-                        "amount": order.orderTotal * 100,
-                        "redirectUrl": "https://thehworld.in/order/payment",
-                        "redirectMode": "REDIRECT",
-                        "callbackUrl": "https://thehworld-service-commerce.onrender.com/api/web/payment/callback",
-                        "mobileNumber": order.orderUpdateWAPhone,
-                        "paymentInstrument": {
-                            "type": "PAY_PAGE"
-                        }
-                    }
-                    console.log("Generated Payment Body - ", PhonePePaymentBody);
-                    var encodedData = base64.encode(JSON.stringify(PhonePePaymentBody));
-                    console.log("Generated Payment Body Base64 - ", encodedData);
-                    var salt = "17cfc168-1045-43cb-88b1-ad26c042f233"
-                    var x_verify_payload = encodedData + "/pg/v1/pay" + salt
-                    console.log("x-verify Payload - ", x_verify_payload);
-                    var x_verify = SHA256(x_verify_payload) + "###1";
-                    console.log("x-verify  - ", x_verify);
 
-
-                    var redirect = "https://thehworld-service-commerce.onrender.com/api/web/payment/redirect";
-                    var callback = "https://thehworld-service-commerce.onrender.com/api/web/payment/callback";
-
-                    // Request to Payment Gateway
-
-                    let data = JSON.stringify({
-                        "request": encodedData
-                    });
-                    let config = {
-                        method: 'post',
-                        maxBodyLength: Infinity,
-                        url: 'https://api.phonepe.com/apis/hermes/pg/v1/pay',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-VERIFY': x_verify
-                        },
-                        data: data
-                    };
-
-                    axios.request(config).then((response) => {
-                        console.log(response.data);
-                        return res.json({
-                                paymentURlredirect: response.data.instrumentResponse,
-                                paymentObject: response.data,
-                                paymentStatus: true
-                            })
-                            // console.log("Payment Res - ", response);
-
-
-                    }).catch((err) => {
-                        console.log("Error - ", err);
-                    });
-
-
-
-                }).catch((error) => {
-                    onsole.log("User Order Update Error", err);
+                }).catch((err) => {
+                    console.log("Create Order Complete Error", err);
                     return res.json({
                         error: err
                     })
@@ -317,10 +330,10 @@ exports.createOrder = (req, res) => {
 
 
 
+
             }).catch((err) => {
-                console.log("Create Order Complete Error", err);
                 return res.json({
-                    error: err
+                    status: false
                 })
             })
 
@@ -328,19 +341,160 @@ exports.createOrder = (req, res) => {
 
 
 
-        }).catch((err) => {
-            return res.json({
-                status: false
+
+        }
+
+    } else if (req.body.paymentOptions === "COD") {
+        const user_token = req.headers.token;
+        const user_data = jwt_decode(user_token);
+        if (user_data) {
+            console.log(user_data);
+            User.findOne({ userId: user_data.user.userId }).then((user, err) => {
+                // console.log("User - ", user);
+
+
+
+                const merchantOrderId = uuidv4();
+
+                const newOrder = new Order();
+                newOrder.orderId = merchantOrderId;
+                newOrder.orderNotes = req.body.userOrderNote;
+
+                newOrder.orderSubTotal = req.body.userOrderSubTotal;
+                newOrder.orderTotal = req.body.userOrderGrandTotal;
+                newOrder.orderisOffer = uuidv4();
+                newOrder.orderBy = uuidv4();
+                newOrder.orderUpdateWAPhone = req.body.userWAPhone;
+                newOrder.orderProduct = req.body.userOrderProduct;
+
+                // Payment
+                newOrder.paymentId = merchantOrderId;
+                newOrder.paymentToken = uuidv4();
+                newOrder.paymentTotal = req.body.userOrderGrandTotal;
+                // newOrder.paymentMethod = req.body.paymentMethod;
+
+                // *++ User 
+                newOrder.orderForUser = user._id;
+                // Shipment
+                newOrder.shipmentId = merchantOrderId;
+                newOrder.shipmentPincode = req.body.userAddressPincode;
+                newOrder.shipmentAddress = req.body.userAddress + ", " + req.body.userAddressTwo + ", " + req.body.userCityTown + ", " + req.body.userState;
+                newOrder.shipmentState = req.body.userState;
+                newOrder.shipmentCityTown = req.body.userTown;
+                newOrder.shipmentToken = uuidv4();
+                newOrder.paymentResponse = {
+
+                    success: true,
+                    code: "COD_SUCCESS",
+                    message: "Your payment is successful.",
+                    data: {
+                        paymentInstrument: {
+                            type: "COD"
+                        }
+                    }
+                };
+
+                newOrder.save().then((order, err) => {
+                    if (err) {
+                        return res.json({
+                            error: err
+                        })
+                    }
+                    if (!order) {
+                        return res.json({
+                            error: "Order: Failure"
+                        })
+                    }
+                    // console.log("Order Saved - ", order);
+
+
+                    // Order Created Success
+                    // Handle Missing Fileds In User Profile
+                    if (!user.contactNumber)
+                        user.contactNumber = req.body.userPhone
+                    if (!user.contactWAForAuto)
+                        user.contactWAForAuto = req.body.userWAPhone
+                    if (!user.userState)
+                        user.userState = req.body.userState
+                    if (!user.userTown)
+                        user.userTown = req.body.userTown
+                    if (!user.userHome)
+                        user.userHome = req.body.userHome
+                    if (!user.userAddressPincode)
+                        user.userAddressPincode = req.body.userAddressPincode
+                    if (user.userAddresses.length < 1 || user.userAddresses === undefined) {
+                        console.log("user.userAddress", user.userAddress);
+
+                        let address_new = req.body.userAddress + ", " + req.body.userAddressTwo + ", " + req.body.userCityTown + ", " + req.body.userState;
+                        let address_list = []
+                        address_list.push(address_new);
+                        user.userAddresses = address_list;
+                    } else if (user.userAddresses.length >= 1) {
+                        let address_lists = [];
+                        console.log(user.userAddresses);
+                        address_lists = user.userAddresses;
+                        let address_new = req.body.userAddress + ", " + req.body.userAddressTwo + ", " + req.body.userCityTown + ", " + req.body.userState;
+                        address_lists.push(address_new);
+                        user.userAddresses = address_lists;
+                    }
+
+
+                    let user_order_list = user.userOrders;
+                    user_order_list.push(order._id);
+                    user.userOrders = user_order_list;
+                    user.userCart = [];
+                    user.save().then((userOrder, err) => {
+                        console.log("User Order Test - ", userOrder);
+                        if (err) {
+                            return res.json({
+                                error: err
+                            })
+                        }
+                        if (!userOrder) {
+                            return res.json({
+                                error: err
+                            })
+                        }
+                        return res.json({
+                                orderCycle: true,
+                                orderCart: userOrder,
+                                userRedirect: true
+                            })
+                            // COD Payment Method
+                    })
+
+
+                    // 
+
+
+
+
+
+
+                }).catch((err) => {
+                    console.log("Create Order Complete Error", err);
+                    return res.json({
+                        error: err
+                    })
+                })
+
+
+
+
+
+            }).catch((err) => {
+                return res.json({
+                    status: false
+                })
             })
-        })
 
 
 
 
 
 
+        }
     }
-
 }
 
 exports.getOrdersUnderUser = (req, res) => {

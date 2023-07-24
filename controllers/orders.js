@@ -57,6 +57,7 @@ exports.getAOrderDetail = (req, res) => {
             })
         }
         User.findOne({ _id: order.orderForUser }).then((user, err) => {
+
             if (err) {
                 return res.json({
                     order: order
