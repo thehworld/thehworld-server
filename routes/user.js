@@ -1,5 +1,5 @@
 const express = require('express');
-const { userAuthGoogle, getUserAuthFromToken, getUserDetailToken, getUserInfoFromToken, addToCartRemove, userOrderPaymentRedirect, userOrderPaymentCallback, createOrder, getAllUsersDetails, getAUserDetails, getOrdersUnderUser, removeCartFromCartSection } = require('../controllers/user');
+const { userAuthGoogle, getUserAuthFromToken, getUserDetailToken, getUserInfoFromToken, addToCartRemove, userOrderPaymentRedirect, userOrderPaymentCallback, createOrder, getAllUsersDetails, getAUserDetails, getOrdersUnderUser, removeCartFromCartSection, checkPaymentOfAOrder } = require('../controllers/user');
 const route = express.Router();
 
 
@@ -21,7 +21,8 @@ route.get('/get/orders/under/user/:userID', getOrdersUnderUser);
 route.post("/payment/redirect", userOrderPaymentRedirect);
 route.post("/payment/callback", userOrderPaymentCallback);
 
-
+// User Order Payment Check
+route.post("/check/a/payment", checkPaymentOfAOrder);
 
 
 

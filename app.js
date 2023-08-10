@@ -1,4 +1,4 @@
-// process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
 require("dotenv").config();
 const express = require('express');
 const app = express();
@@ -18,7 +18,7 @@ app.use(cookieParser());
 
 const corsOptions = {
     AccessControlAllowOrigin: '*',
-    origin: ['https://vocal-cassata-37976e.netlify.app', 'http://localhost:3000', "https://thehworld.in/", 'http://localhost:3001'],
+    origin: ['https://thehworld.in/', 'http://localhost:3000', 'http://localhost:3001'],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true
 }

@@ -14,7 +14,7 @@ const Order = require('../models/orders');
 
 exports.userAuthGoogle = (req, res) => {
     pigcolor.box("User: Auth Google");
-    // console.log(req.body);
+    console.log(req.body);
     if (!req.body)
         return res.status(400).json({
             error: "Empty payload!!"
@@ -43,7 +43,9 @@ exports.userAuthGoogle = (req, res) => {
                         error: err
                     })
                 }
-                var token = jwt.sign({ usertoken: authCodeHere, user: newUser }, 'THEHWORLDSECRET');
+                var token = jwt.sign({ usertoken: authCodeHere, user: newUser }, 'THEHWORLDSECRET', {
+                    expiresIn: '1d' // expires in 365 days
+                });
                 return res.json({
                     token: token
                 })
@@ -55,7 +57,9 @@ exports.userAuthGoogle = (req, res) => {
             })
         } else {
             console.log("User Exist - ", user);
-            var token = jwt.sign({ usertoken: user.userId, user: user }, 'THEHWORLDSECRET');
+            var token = jwt.sign({ usertoken: user.userId, user: user }, 'THEHWORLDSECRET', {
+                expiresIn: '1d' // expires in 365 days
+            });
             return res.json({
                 token: token
             })
@@ -823,4 +827,48 @@ exports.getAUserDetails = (req, res) => {
     }).catch((err) => {
         console.log("Error - ", err);
     });
+}
+
+
+// ?? Payment Order Check
+exports.checkPaymentOfAOrder = (req, res) => {
+    pigcolor.box("Order: Get All Payment Check");
+    console.log("Res Body Payment Check - ", req.body.orderID);
+
+    const merchantId = "THEHWORLDONLINE";
+    const merchantTransactionId = req.body.orderID;
+    const pre_X_VERIFY = `/pg/v1/status/${merchantId}/${merchantTransactionId}` + "17cfc168-1045-43cb-88b1-ad26c042f233"
+    const X_VERIFY_TEMP = SHA256(pre_X_VERIFY)
+    const X_VERIFY_INIT = X_VERIFY_TEMP + "###1";
+    const X_MERC_ID = "THEHWORLDONLINE";
+
+    console.log("pre_X_VERIFY - ", pre_X_VERIFY);
+    console.log("X_VERIFY_TEMP - ", X_VERIFY_TEMP);
+    console.log("X_VERIFY_INIT - ", X_VERIFY_INIT);
+    console.log("X_MERC_ID - ", X_MERC_ID);
+
+    let config = {
+        method: 'get',
+        maxBodyLength: Infinity,
+        url: `https://api.phonepe.com/apis/hermes/pg/v1/status/${merchantId}/${merchantTransactionId}`,
+        headers: {
+            'X-VERIFY': X_VERIFY_INIT,
+            'X-MERCHANT-ID': 'THEHWORLDONLINE'
+        }
+    };
+
+    axios.request(config).then((response) => {
+        console.log(response.data);
+        return res.json({
+            paymentStatus: response.data
+        })
+    }).catch((err) => {
+        console.log("Error - ", err);
+        return res.json({
+            error: true
+        })
+    });
+
+
+
 }
