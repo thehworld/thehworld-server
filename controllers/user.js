@@ -156,7 +156,7 @@ exports.createOrder = (req, res) => {
         const user_data = jwt_decode(user_token);
         if (user_data) {
             console.log(user_data);
-            User.findOne({ userId: user_data.user.userId }).then((user, err) => {
+            User.findOne({ userId: user_data.usertoken }).then((user, err) => {
                 // console.log("User - ", user);
 
 
@@ -353,7 +353,7 @@ exports.createOrder = (req, res) => {
         const user_data = jwt_decode(user_token);
         if (user_data) {
             console.log(user_data);
-            User.findOne({ userId: user_data.user.userId }).then((user, err) => {
+            User.findOne({ userId: user_data.usertoken }).then((user, err) => {
                 // console.log("User - ", user);
 
 
@@ -601,7 +601,7 @@ exports.getUserInfoFromToken = (req, res, next) => {
     const user_data = jwt_decode(user_token);
     if (user_data) {
         // console.log(user_data);
-        User.findOne({ userId: user_data.user.userId }).then((user, err) => {
+        User.findOne({ userId: user_data.usertoken }).then((user, err) => {
             if (err) {
                 return res.json({
                     status: false
