@@ -43,7 +43,7 @@ exports.userAuthGoogle = (req, res) => {
                         error: err
                     })
                 }
-                var token = jwt.sign({ usertoken: authCodeHere }, 'THEHWORLDSECRET', {
+                var token = jwt.sign({ usertoken: newUser._id }, 'THEHWORLDSECRET', {
                     expiresIn: '1d' // expires in 365 days
                 });
                 return res.json({
@@ -85,7 +85,7 @@ exports.getUserAuthFromToken = (req, res) => {
     const user_data = jwt_decode(user_token);
     if (user_data) {
         console.log(user_data);
-        User.findOne({ userId: user_data.user.userId }).then((user, err) => {
+        User.findOne({ userId: user_data.usertoken }).then((user, err) => {
             if (err) {
                 return res.json({
                     status: false
