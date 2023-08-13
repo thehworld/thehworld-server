@@ -41,7 +41,12 @@ exports.getAllDashboardDetails = (req, res) => {
                 console.log("Total Orders - ", totalOrderCount);
                 console.log("Total Order Value - ", totalOrderValue);
                 console.log("Total Order Products - ", totalOrderProducts);
-
+                return res.json({
+                    totalUsersCount,
+                    totalOrderCount,
+                    totalOrderValue,
+                    totalOrderProducts
+                })
 
 
             }).catch((err) => {
