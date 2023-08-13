@@ -78,6 +78,7 @@ exports.viewStatusMake = (req, res) => {
             })
         }
         console.log("Views - ", stats);
+        console.log("Views Count - ", stats[0]);
         stats[0].totalWebsiteViews = stats[0].totalWebsiteViews + 1;
         stats[0].totalProductViews = stats[0].totalProductViews + 1;
         stats.save().then((newStats, err) => {
