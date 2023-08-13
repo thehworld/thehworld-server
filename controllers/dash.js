@@ -70,15 +70,34 @@ exports.getAllDashboardDetails = (req, res) => {
 
 
 exports.viewStatusMake = (req, res) => {
-    const newView = new View();
-    newView.totalWebsiteViews = 0;
-    newView.totalProductViews = 0;
-    newView.save((view, error) => {
-        if (error) {
+    console.log("View Stats - ", req.body);
+    View.find({}).then((stats, err) => {
+        if (err) {
             return res.json({
-                error: error
+                error: err
             })
         }
-        console.log("View - ", view);
+        stats[0].totalWebsiteViews = stats[0].totalWebsiteViews + 1;
+        stats[0].totalProductViews = stats[0].totalProductViews + 1;
+        stats.save().then((newStats, err) => {
+            if (err) {
+                return res.json({
+                    error: err
+                })
+            }
+            return res.json({
+                newStats
+            })
+        }).catch((err) => {
+            if (err) {
+                return res.json({
+                    error: err
+                })
+            }
+        })
+    }).catch((err) => {
+        return res.json({
+            error: err
+        })
     });
 }
