@@ -1,5 +1,6 @@
 const express = require('express');
 const { userAuthGoogle, getUserAuthFromToken, getUserDetailToken, getUserInfoFromToken, addToCartRemove, userOrderPaymentRedirect, userOrderPaymentCallback, createOrder, getAllUsersDetails, getAUserDetails, getOrdersUnderUser, removeCartFromCartSection, checkPaymentOfAOrder } = require('../controllers/user');
+const { getAllDashboardDetails, viewStatusMake } = require('../controllers/dash');
 const route = express.Router();
 
 
@@ -34,5 +35,12 @@ route.post('/remove/cart', getUserInfoFromToken, removeCartFromCartSection);
 
 route.get('/users/get/all', getAllUsersDetails);
 route.get('/get/a/user/:userId', getAUserDetails);
+
+
+
+// Portion for Admin Dashboad
+route.get('/get/dash/stats', getAllDashboardDetails);
+route.post('/status/update', viewStatusMake);
+
 
 module.exports = route;
