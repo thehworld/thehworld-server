@@ -37,16 +37,31 @@ exports.getAllDashboardDetails = (req, res) => {
                     totalOrderProducts = totalOrderProducts + or.orderProduct[0].qty;
 
                 });
-                console.log("Total Users  - ", totalUsersCount);
-                console.log("Total Orders - ", totalOrderCount);
-                console.log("Total Order Value - ", totalOrderValue);
-                console.log("Total Order Products - ", totalOrderProducts);
-                return res.json({
-                    totalUsersCount,
-                    totalOrderCount,
-                    totalOrderValue,
-                    totalOrderProducts
+
+                View.find({}).then((views, error) => {
+                    if (error) {
+                        return res.status.json({
+                            error: err
+                        })
+                    }
+                    console.log("Total Users  - ", totalUsersCount);
+                    console.log("Total Orders - ", totalOrderCount);
+                    console.log("Total Order Value - ", totalOrderValue);
+                    console.log("Total Order Products - ", totalOrderProducts);
+                    console.log("Total Ecommerce Views - ", views);
+                    return res.json({
+                        totalUsersCount,
+                        totalOrderCount,
+                        totalOrderValue,
+                        totalOrderProducts,
+                        views
+                    })
+                }).catch((err) => {
+                    return res.status.json({
+                        error: err
+                    })
                 })
+
 
 
             }).catch((err) => {
