@@ -53,7 +53,7 @@ exports.getAllBlogs = (req, res) => {
 
 exports.getABlog = (req, res) => {
     pigcolor.box("GET A: Blog");
-    console.log("Blog ID - ", req.pramas);
+    console.log("Blog ID - ", req.params);
     Blog.findById({ _id: req.params.bId })
         .then((blog, err) => {
             if (err) {
