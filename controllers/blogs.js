@@ -54,7 +54,7 @@ exports.getAllBlogs = (req, res) => {
 exports.getABlog = (req, res) => {
     pigcolor.box("GET A: Blog");
     console.log("Blog ID - ", req.params);
-    Blog.findById({ _id: req.params.bId })
+    Blog.findOne({ blogsId: req.params.bId })
         .then((blog, err) => {
             if (err) {
                 return res.json({
