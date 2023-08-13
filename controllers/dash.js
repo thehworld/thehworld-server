@@ -77,6 +77,7 @@ exports.viewStatusMake = (req, res) => {
                 error: err
             })
         }
+        console.log("Views - ", stats);
         stats[0].totalWebsiteViews = stats[0].totalWebsiteViews + 1;
         stats[0].totalProductViews = stats[0].totalProductViews + 1;
         stats.save().then((newStats, err) => {
@@ -89,11 +90,9 @@ exports.viewStatusMake = (req, res) => {
                 newStats
             })
         }).catch((err) => {
-            if (err) {
-                return res.json({
-                    error: err
-                })
-            }
+            return res.json({
+                error: err
+            })
         })
     }).catch((err) => {
         return res.json({
