@@ -95,12 +95,12 @@ exports.viewStatusMake = (req, res) => {
             console.log(err);
 
             return res.json({
-                error: err
+                errorNewSave: err
             })
         })
     }).catch((err) => {
         return res.json({
-            error: err
+            errorOut: err
         })
     });
 }
