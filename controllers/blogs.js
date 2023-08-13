@@ -50,3 +50,22 @@ exports.getAllBlogs = (req, res) => {
         })
     });
 }
+
+exports.getABlog = (req, res) => {
+    pigcolor.box("GET A: Blog");
+    Blog.findById({ _id: req.params.bId })
+        .then((blog, err) => {
+            if (err) {
+                return res.json({
+                    error: err
+                })
+            }
+            return res.json({
+                blog: blog
+            })
+        }).catch((err) => {
+            return res.json({
+                error: err
+            })
+        })
+}
