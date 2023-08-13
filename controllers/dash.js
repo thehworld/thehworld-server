@@ -81,6 +81,7 @@ exports.viewStatusMake = (req, res) => {
         stats[0].totalWebsiteViews = stats[0].totalWebsiteViews + 1;
         stats[0].totalProductViews = stats[0].totalProductViews + 1;
         stats.save().then((newStats, err) => {
+            console.log(err, newStats);
             if (err) {
                 return res.json({
                     error: err
@@ -90,6 +91,8 @@ exports.viewStatusMake = (req, res) => {
                 newStats
             })
         }).catch((err) => {
+            console.log(err);
+
             return res.json({
                 error: err
             })
