@@ -99,6 +99,8 @@ exports.viewStatusMake = (req, res) => {
             })
         })
     }).catch((err) => {
+        console.log(err);
+
         return res.json({
             errorOut: err
         })
