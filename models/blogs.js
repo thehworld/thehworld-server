@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const crypto = required('crypto');
 const { v4: uuidv4 } = require('uuid');
 const { ObjectId } = mongoose.Schema;
 
@@ -11,17 +10,6 @@ const blogsSchema = new mongoose.Schema({
         uniqie: true
     },
 
-    blogsCategory: {
-        type: ObjectId,
-        ref: "Category",
-        required: true
-    },
-
-    productId: {
-        type: ObjectId,
-        ref: "Product",
-        required: true
-    },
 
     blogTitle: {
         type: String,
@@ -31,6 +19,10 @@ const blogsSchema = new mongoose.Schema({
     blogSubTitle: {
         type: String,
         required: true
+    },
+
+    blogSubSections: {
+        type: [Object]
     },
 
     blogDescription: {

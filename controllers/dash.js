@@ -121,3 +121,41 @@ exports.viewStatusMake = (req, res) => {
         })
     });
 }
+
+
+exports.viewStatusMakeProduct = (req, res) => {
+    console.log("View Stats - ", req.body);
+    View.find({}).then((stats, err) => {
+        if (err) {
+            return res.json({
+                error: err
+            })
+        }
+        console.log("Views - ", stats);
+        console.log("Views Count - ", stats[0]);
+        stats[0].totalProductViews = stats[0].totalProductViews + 1;
+        stats[0].save().then((newStats, err) => {
+            console.log("Stats Controls - ", err, newStats);
+            if (err) {
+                return res.json({
+                    error: err
+                })
+            }
+            return res.json({
+                newStats
+            })
+        }).catch((err) => {
+            console.log(err);
+
+            return res.json({
+                errorNewSave: err
+            })
+        })
+    }).catch((err) => {
+        console.log(err);
+
+        return res.json({
+            errorOut: err
+        })
+    });
+}

@@ -79,6 +79,7 @@ const userRoute = require("./routes/user");
 const categoryRouter = require("./routes/category");
 const productRouter = require("./routes/product");
 const ordersRouter = require("./routes/orders");
+const blogsRouter = require("./routes/blogs");
 
 // **********************************************************************
 
@@ -105,6 +106,8 @@ const WEB = '/api/web';
 app.use(WEB, categoryRouter);
 app.use(WEB, productRouter);
 app.use(WEB, ordersRouter);
+app.use(WEB, blogsRouter);
+
 
 // ?? Auth 
 app.use(WEB, userRoute);
