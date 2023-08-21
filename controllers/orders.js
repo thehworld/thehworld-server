@@ -270,3 +270,147 @@ exports.changeOrderStatus = (req, res) => {
     })
 
 }
+
+exports.changeOrderStatusUser = (req, res) => {
+    pigcolor.box("Change: Order Status User");
+    console.log(req.body);
+    // Order.findOne({ _id: req.body.status.id }).then((order, err) => {
+    //     if (err) {
+    //         return res.json({
+    //             error: err
+    //         })
+    //     }
+    //     console.log(order);
+    //     order.orderStatus = req.body.status.status;
+    //     order.save().then((newOrder, err) => {
+
+    //         if (err) {
+    //             return res.json({
+    //                 error: err
+    //             })
+    //         }
+    //         if (!newOrder) {
+    //             return res.json({
+    //                 error: "Order don't exist"
+    //             })
+    //         }
+
+    //         return res.json({
+    //             order: newOrder
+    //         })
+
+    //     }).catch((error) => {
+    //         return res.json({
+    //             error: error
+    //         })
+    //     });
+    //     // if (req.body.status.status === "REFUND INIT") {
+
+    //     //     // Generate PhonePe Payment Body
+    //     //     const PhonePePaymentBody = {
+    //     //         "merchantId": "THEHWORLDONLINE",
+    //     //         "merchantTransactionId": req.body.status.orderId,
+    //     //         "transactionId": req.body.status.orderId,
+    //     //         "providerReferenceId": req.body.status.paymentResponse.data.transactionId,
+    //     //         "amount": req.body.status.orderTotal * 100,
+    //     //         "merchantOrderId": req.body.status.orderId,
+    //     //         "message": "refund for cancelled order"
+    //     //     }
+    //     //     console.log("Generated Payment Body - ", PhonePePaymentBody);
+    //     //     var encodedData = base64.encode(JSON.stringify(PhonePePaymentBody));
+    //     //     console.log("Generated Payment Body Base64 - ", encodedData);
+    //     //     var salt = "17cfc168-1045-43cb-88b1-ad26c042f233"
+    //     //     var x_verify_payload = encodedData + "/v3/credit/backToSource" + salt
+    //     //     console.log("x-verify Payload - ", x_verify_payload);
+    //     //     var x_verify = SHA256(x_verify_payload) + "###1";
+    //     //     console.log("x-verify  - ", x_verify);
+
+
+
+    //     //     let data = JSON.stringify({
+    //     //         "request": encodedData
+    //     //     });
+    //     //     let config = {
+    //     //         method: 'post',
+    //     //         maxBodyLength: Infinity,
+    //     //         url: 'https://api.phonepe.com/apis/hermes/pg/v1/refund',
+    //     //         headers: {
+    //     //             'Content-Type': 'application/json',
+    //     //             'X-VERIFY': x_verify
+    //     //         },
+    //     //         data: data
+    //     //     };
+
+    //     //     axios.request(config).then((response) => {
+    //     //         console.log(response.data);
+    //     //         if (response.data.success) {
+    //     //             order.orderStatus = "REFUNDED";
+    //     //             order.save().then((newOrder, err) => {
+
+    //     //                 if (err) {
+    //     //                     return res.json({
+    //     //                         error: err
+    //     //                     })
+    //     //                 }
+    //     //                 if (!newOrder) {
+    //     //                     return res.json({
+    //     //                         error: "Order don't exist"
+    //     //                     })
+    //     //                 }
+
+    //     //                 return res.json({
+    //     //                     order: newOrder,
+    //     //                     paymentURlredirect: response.data.instrumentResponse,
+    //     //                     paymentObject: response.data,
+    //     //                     paymentStatus: true
+    //     //                 })
+
+    //     //             }).catch((error) => {
+    //     //                 return res.json({
+    //     //                     error: error
+    //     //                 })
+    //     //             });
+    //     //         }
+
+
+    //     //     }).catch((err) => {
+    //     //         console.log("Error - ", err);
+    //     //     });
+
+
+    //     // } else {
+
+    //     //     order.save().then((newOrder, err) => {
+
+    //     //         if (err) {
+    //     //             return res.json({
+    //     //                 error: err
+    //     //             })
+    //     //         }
+    //     //         if (!newOrder) {
+    //     //             return res.json({
+    //     //                 error: "Order don't exist"
+    //     //             })
+    //     //         }
+
+    //     //         return res.json({
+    //     //             order: newOrder
+    //     //         })
+
+    //     //     }).catch((error) => {
+    //     //         return res.json({
+    //     //             error: error
+    //     //         })
+    //     //     });
+    //     // }
+
+
+    // }).catch((err) => {
+    //     if (err) {
+    //         return res.json({
+    //             error: err
+    //         })
+    //     }
+    // })
+
+}
