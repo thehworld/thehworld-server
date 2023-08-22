@@ -47,3 +47,22 @@ exports.getAllOfferCode = (req, res) => {
         })
     })
 }
+
+
+exports.getOfferCodeValue = (req, res) => {
+    pigcolor.box("Offer: Code Value");
+    Offer.findOne({ code: req.params.code }).then((code, err) => {
+        if (err) {
+            return res.json({
+                error: err
+            })
+        }
+        return res.json({
+            code: code
+        })
+    }).catch((error) => {
+        return res.json({
+            error: error
+        })
+    });
+}

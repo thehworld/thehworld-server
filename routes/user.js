@@ -1,7 +1,7 @@
 const express = require('express');
 const { userAuthGoogle, getUserAuthFromToken, getUserDetailToken, getUserInfoFromToken, addToCartRemove, userOrderPaymentRedirect, userOrderPaymentCallback, createOrder, getAllUsersDetails, getAUserDetails, getOrdersUnderUser, removeCartFromCartSection, checkPaymentOfAOrder } = require('../controllers/user');
 const { getAllDashboardDetails, viewStatusMake, viewStatusMakeProduct } = require('../controllers/dash');
-const { createOfferCode, getAllOfferCode } = require('../controllers/offer');
+const { createOfferCode, getAllOfferCode, getOfferCodeValue } = require('../controllers/offer');
 const route = express.Router();
 
 
@@ -48,5 +48,6 @@ route.post('/status/update/product', viewStatusMakeProduct);
 // Offer
 route.post('/create/offer/code', createOfferCode);
 route.get('/get/all/offers', getAllOfferCode);
+route.get('/get/offer/:code', getOfferCodeValue);
 
 module.exports = route;
