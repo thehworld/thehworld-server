@@ -23,3 +23,22 @@ exports.issueProblem = (req, res) => {
             })
         });
 }
+
+
+exports.getAllOrderIssues = (req, res) => {
+    pigcolor.box("GET ALL: Orders");
+    Issue.find({}).then((issues, err) => {
+        if (err) {
+            return res.json({
+                error: err
+            })
+        }
+        return res.json({
+            issues: issues
+        })
+    }).catch((err) => {
+        return res.json({
+            error: err
+        })
+    });
+}
