@@ -5,7 +5,7 @@ exports.issueProblem = (req, res) => {
     pigcolor.box("Problem: Issue");
     console.log("Problem - ", req.body);
     const newIssue = new Issue();
-    newIssue.order = req.body.order;
+    newIssue.order = req.body;
     newIssue.status = "NEW";
     newIssue.save()
         .then((problm, err) => {
