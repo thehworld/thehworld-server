@@ -19,7 +19,7 @@ exports.userAuthGoogle = (req, res) => {
         return res.status(400).json({
             error: "Empty payload!!"
         })
-    User.findOne({ userEmail: req.body.user.email }).then((user, err) => {
+    User.findOne({ userEmail: req.body.user.email }).then(async (user, err) => {
         console.log(user, err);
         if (err) {
             return res.status(400).json({
@@ -28,33 +28,22 @@ exports.userAuthGoogle = (req, res) => {
         }
         if (!user) {
             console.log("New User - ", user);
-            const newUser = new User();
-            newUser.userId = req.body.user.sub;
-            newUser.userName = req.body.user.given_name;
-            newUser.userGoogleName = req.body.user.name;
-            newUser.userProfilePic = req.body.user.picture;
-            newUser.userEmail = req.body.user.email;
-            const authCodeHere = uuidv4();
-            newUser.userAuthCode = authCodeHere;
-            newUser.save().then((newUser, err) => {
-                console.log("newUser - ", newUser, err);
-                if (err) {
-                    return res.status(400).json({
-                        error: err
-                    })
-                }
-                var token = jwt.sign({ usertoken: newUser._id }, 'THEHWORLDSECRET', {
-                    expiresIn: '1d' // expires in 365 days
-                });
-                return res.json({
-                    token: token
-                })
-            }).catch((err) => {
-                console.log(err);
-                return res.status(400).json({
-                    error: err
-                })
+            let data = {
+                userId: req.body.user.sub,
+                userName: req.body.user.given_name,
+                userGoogleName: req.body.user.name,   
+                userProfilePic: req.body.user.picture,
+                userEmail: req.body.user.email,
+                userAuthCode: uuidv4()
+               };
+            let newdata = await User.create(data)
+            var token = jwt.sign({ usertoken: newdata.userId }, 'THEHWORLDSECRET', {
+                expiresIn: '1d'
+            });
+            return res.json({
+                token: token
             })
+           
         } else {
             console.log("User Exist - ", user);
             var token = jwt.sign({ usertoken: user.userId }, 'THEHWORLDSECRET', {
@@ -68,24 +57,18 @@ exports.userAuthGoogle = (req, res) => {
     }).catch((error) => {
         console.log("Error - ", error);
     });
-
-
-    console.log("Req Data - ", req.body);
-
-
-    // User.findOne({userEmail: req.body.email});
-
-
 }
 
-exports.getUserAuthFromToken = (req, res) => {
+exports.getUserAuthFromToken = async(req, res) => {
     pigcolor.box("Get: User Details From Token");
     // console.log(req.headers.token);
     const user_token = req.headers.token;
-    const user_data = jwt_decode(user_token);
+    const user_data = await jwt_decode(user_token);
+    console.log("user data",user_data);
     if (user_data) {
         console.log(user_data);
         User.findOne({ userId: user_data.usertoken }).then((user, err) => {
+            console.log("user data from db",user);
             if (err) {
                 return res.json({
                     status: false
