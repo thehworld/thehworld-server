@@ -51,7 +51,7 @@ exports.getAllOfferCode = (req, res) => {
 
 exports.getOfferCodeValue = (req, res) => {
     pigcolor.box("Offer: Code Value");
-    Offer.findOne({ code: req.params.code }).then((code, err) => {
+    Offer.findOne({ code: req.params.code, status:'ACTIVE' }).then((code, err) => {
         if (err) {
             return res.json({
                 error: err

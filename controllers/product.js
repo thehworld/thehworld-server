@@ -180,7 +180,8 @@ exports.editProduct = (req, res) => {
 
 exports.deleteProduct = (req, res) => {
     Pig.box("DELETE: Product");
-    const prodId = req.body.prodId;
+    console.log("delete produt id ",req.params.id);
+    const prodId = req.params.id;
     Product.findByIdAndDelete({ _id: prodId }).then((prod, err) => {
             if (err) {
                 return res.status(400).json({

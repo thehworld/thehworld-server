@@ -315,14 +315,11 @@ exports.createOrder = (req, res) => {
 
 
                     }).catch((error) => {
-                        onsole.log("User Order Update Error", err);
+                        console.log("User Order Update Error", err);
                         return res.json({
                             error: err
                         })
                     })
-
-
-
 
                 }).catch((err) => {
                     console.log("Create Order Complete Error", err);
@@ -636,11 +633,26 @@ exports.addToCartRemove = (req, res) => {
         const isProductExistInCart = req.user.userCart.filter((p) => p.id === req.body.product.id);
         const isProductExistInCartIndex = req.user.userCart.findIndex((p) => p.id === req.body.product.id);
         if (isProductExistInCart[0]) {
+
+            if (req.body.product.qty < 1) {
+                let new_list_cart = req.user.userCart;
+                new_list_cart.splice(isProductExistInCartIndex, 1);
+                User.updateOne({ userId: req.user.userId }, {
+                    userCart: new_list_cart
+                }).then((user, err) => {
+                    console.log("user - ", user, err);
+                    return res.json({
+                        data: user
+                    })
+                });
+            } 
+
+            else{
             const cart_list = req.user.userCart;
             cart_list[isProductExistInCartIndex] = {
                 id: req.body.product.id,
-                product: req.body.product.product,
-                qty: isProductExistInCart[0].qty + 1
+                product: req.body.product.product, 
+                qty: req.body.product.qty
             }
             User.updateOne({ userId: req.user.userId }, {
                 userCart: cart_list
@@ -652,9 +664,16 @@ exports.addToCartRemove = (req, res) => {
             }).catch((err) => {
                 console.log("Error - ", err);
             });
+        }
         } else {
             const cart_object = req.body.product;
             let new_cart_list = req.user.userCart;
+            if (req.body.product.qty < 1) {
+               return res.json({
+                    data: ""
+                })
+            }
+            else{
             new_cart_list.push(cart_object);
             User.updateOne({ userId: req.user.userId }, {
                 userCart: new_cart_list
@@ -666,6 +685,8 @@ exports.addToCartRemove = (req, res) => {
             }).catch((err) => {
                 console.log("Error - ", err);
             });
+             }
+            
         }
     } else if (user_cart.length > 0 && req.body.opt === "Rmv") {
         console.log("Remove");
@@ -719,10 +740,10 @@ exports.addToCartRemove = (req, res) => {
 }
 
 exports.removeCartFromCartSection = (req, res) => {
+   
     pigcolor.box("Remove: Product from Cart");
-    // console.log(req.body);
-    // console.log(req.user);
-    User.findOne({ useId: req.user.userId }).then((user, err) => {
+    
+    User.findOne({ useId: req.user.userId }).then(async (user, err) => {
         console.log("User - ", user, err);
 
         if (err) {
@@ -736,8 +757,8 @@ exports.removeCartFromCartSection = (req, res) => {
             })
         }
         const temp_cart = user.userCart;
-        let tempt_cart_index_to_remove = temp_cart.findIndex((c) => c.id === req.body.id);
-        temp_cart.splice(tempt_cart_index_to_remove, 1);
+        let tempt_cart_index_to_remove = await temp_cart.findIndex((c) => c.id === req.body.id);
+        await temp_cart.splice(tempt_cart_index_to_remove, 1);
         console.log("Cart Index - ", temp_cart);
         user.userCart = temp_cart;
         user.save().then((cartuser, err) => {

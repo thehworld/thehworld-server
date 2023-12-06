@@ -13,7 +13,7 @@ const cookieParser = require('cookie-parser');
 
 
 // ** Middlewares
-app.use(bodyParser.json());
+app.use(bodyParser.json({limit:"50mb"}));
 app.use(cookieParser());
 
 const corsOptions = {
@@ -45,13 +45,20 @@ app.options('*', cors());
 // ******************************************************************* DB Connection
 mongoose.set('strictQuery', true);
 mongoose
+        // .connect(process.env.DATABASE_STAG, { 
     .connect(process.env.DATABASE_PROD, {
         useNewUrlParser: true,
-        useUnifiedTopology: true,
+        useUnifiedTopology: true, 
     })
     .then(() => {
         Pig.db();
     });
+    mongoose.connection.on('connected',()=>{
+           console.log("Mongodb connected successfully")
+    })
+    mongoose.connection.on('disconnected',()=>{
+        console.log("Mongodb Disconnected ")
+ })
 
 
 
@@ -95,7 +102,7 @@ app.get("/", (req, res) => {
 });
 
 
-
+// console.log("get orders for admin side!!!")
 
 //********************* All Route Middlewares **********************************
 // ? API Mode
