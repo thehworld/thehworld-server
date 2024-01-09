@@ -18,7 +18,7 @@ app.use(cookieParser());
 
 const corsOptions = {
     AccessControlAllowOrigin: '*',
-    origin: ['https://thehworld.in/', 'http://localhost:3000', 'http://localhost:3001'],
+    origin: ['https://thehworld.in/', 'http://localhost:3000', 'http://localhost:3001','https://thehworld-admin.netlify.app/'],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true
 }
@@ -35,7 +35,7 @@ app.use(function(req, res, next) {
     next();
 });
 
-app.use(cors(corsOptions));
+app.use(cors(corsOptions));    
 
 app.options('*', cors());
 
@@ -43,7 +43,7 @@ app.options('*', cors());
 
 //TODO: Mongoose Setup Node
 // ******************************************************************* DB Connection
-mongoose.set('strictQuery', true);
+mongoose.set('strictQuery', true); 
 mongoose
         // .connect(process.env.DATABASE_STAG, { 
     .connect(process.env.DATABASE_PROD, {
@@ -54,7 +54,7 @@ mongoose
         Pig.db();
     });
     mongoose.connection.on('connected',()=>{
-           console.log("Mongodb connected successfully")
+           console.log("Mongodb connected successfully!!!")
     })
     mongoose.connection.on('disconnected',()=>{
         console.log("Mongodb Disconnected ")

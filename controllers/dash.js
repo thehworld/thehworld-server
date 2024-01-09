@@ -3,85 +3,52 @@ const User = require('../models/users');
 const Order = require('../models/orders');
 const View = require('../models/views');
 
-exports.getAllDashboardDetails = (req, res) => {
-    pigcolor.box("Get: Dashboard Details");
-    let totalUsersCount = 0;
-    let totalOrderCount = 0;
-    let totalOrderValue = 0;
-    let totalOrderProducts = 0;
-    let websiteViews = 0;
-    let websiteProductViews = 0;
 
-    User.count({}).then((userTotal, err) => {
-        if (err) {
-            return res.status.json({
-                error: err
-            })
-        }
-        totalUsersCount = userTotal;
-        Order.count({}).then((orderTotal, err) => {
-            if (err) {
-                return res.status.json({
-                    error: err
-                })
-            }
-            totalOrderCount = orderTotal;
-            Order.find({}).then((orders, err) => {
-                if (err) {
-                    return res.status.json({
-                        error: err
-                    })
-                }
-                orders.map((or, index) => {
-                    totalOrderValue = totalOrderValue + Number(or.orderTotal);
-                    totalOrderProducts = totalOrderProducts + or.orderProduct[0].qty;
+exports.getAllDashboardDetails = async (req, res) => {
+    try {
+        console.log("Get: Dashboard Details");
 
-                });
-
-                View.find({}).then((views, error) => {
-                    if (error) {
-                        return res.status.json({
-                            error: err
-                        })
+        const [userTotal, orderTotal, orders, views] = await Promise.all([
+            User.countDocuments({}),
+            Order.countDocuments({}),
+            Order.aggregate([
+                {
+                    $group: {
+                        _id: null,
+                        totalOrderValue: { $sum: { $toDouble: "$orderTotal" } },
+                        totalOrderProducts: { $sum: "$orderProduct.0.qty" }
                     }
-                    console.log("Total Users  - ", totalUsersCount);
-                    console.log("Total Orders - ", totalOrderCount);
-                    console.log("Total Order Value - ", totalOrderValue);
-                    console.log("Total Order Products - ", totalOrderProducts);
-                    console.log("Total Ecommerce Views - ", views);
-                    return res.json({
-                        totalUsersCount,
-                        totalOrderCount,
-                        totalOrderValue,
-                        totalOrderProducts,
-                        views
-                    })
-                }).catch((err) => {
-                    return res.status.json({
-                        error: err
-                    })
-                })
+                }
+            ]),
+            View.find({})
+        ]);
 
+        const totalUsersCount = userTotal || 0;
+        const totalOrderCount = orderTotal || 0;
+        const totalOrderValue = orders.length > 0 ? orders[0].totalOrderValue : 0;
+        const totalOrderProducts = orders.length > 0 ? orders[0].totalOrderProducts : 0;
 
+        console.log("Total Users  - ", totalUsersCount);
+        console.log("Total Orders - ", totalOrderCount);
+        console.log("Total Order Value - ", totalOrderValue);
+        console.log("Total Order Products - ", totalOrderProducts);
+        console.log("Total Ecommerce Views - ", views);
 
-            }).catch((err) => {
-
-            });
-        }).catch((err) => {
-
+        return res.json({
+            totalUsersCount,
+            totalOrderCount,
+            totalOrderValue,
+            totalOrderProducts,
+            views
         });
+    } catch (error) {
+        console.error("Error - ", error);
+        return res.status(500).json({
+            error: "Internal Server Error"
+        });
+    }
+};
 
-
-    }).catch((err) => {
-        console.log("Error - ", err);
-    });
-
-
-
-
-
-
-}
 
 
 exports.viewStatusMake = (req, res) => {

@@ -53,89 +53,104 @@ exports.getAllOrders = (req, res) => {
     })
 }
 
-exports.getOrdersByFilter = async (req, res) => {
-    const { orderStatus , Time } = req.body; 
-    console.log("data",req.body);
-    let filter={};
-    console.log("get orders for admin side for filter!!!")
-    if(req.body.orderStatus)
-    {
-         filter.orderStatus = orderStatus;
-    }
-    if(req.body.Time){
-        let currentDate = new Date();
-        switch (Time) {
-            case "Last 7 days":
-                let sevenDaysAgo = new Date(currentDate);
-                sevenDaysAgo.setDate(currentDate.getDate() - 7);
-                filter.createdAt = { $gte: sevenDaysAgo, $lt: currentDate };
-                break;
-    
-            case "Last 15 days":
-                let fifteenDaysAgo = new Date(currentDate);
-                fifteenDaysAgo.setDate(currentDate.getDate() - 15);
-                filter.createdAt = { $gte: fifteenDaysAgo, $lt: currentDate };
-                break;
-    
-            case "Last 30 days":
-                let thirtyDaysAgo = new Date(currentDate);
-                thirtyDaysAgo.setDate(currentDate.getDate() - 30);
-                filter.createdAt = { $gte: thirtyDaysAgo, $lt: currentDate };
-                break;
-    
-            case "Today":
-                let startOfDay = new Date(currentDate.setUTCHours(0, 0, 0, 0));
-                let endOfDay = new Date(currentDate.setUTCHours(23, 59, 59, 999));
-                filter.createdAt = { $gte: startOfDay, $lt: endOfDay };
-                break;
-    
-            case "Yesterday":
-                let yesterday = new Date(currentDate);
-                yesterday.setDate(currentDate.getDate() - 1);
-                let startOfYesterday = new Date(yesterday.setUTCHours(0, 0, 0, 0));
-                let endOfYesterday = new Date(yesterday.setUTCHours(23, 59, 59, 999));
-                filter.createdAt = { $gte: startOfYesterday, $lt: endOfYesterday };
-                break;
-    
-            default:
-                filter.createdAt = null;
-                break;
-        }
-    }
-    let  statusCounts ;
-    let totalcount =  await Order.find().count();
-    await Order.find().then((orders=>{
-         // Count orders for each unique status
-          statusCounts = orders.reduce((acc, order) => {
-            const status = order.orderStatus;
-            // Increment count for the status or initialize to 1
-            acc[status] = (acc[status] || 0) + 1;
-            return acc; 
-        }, {});
-    }))
-    statusCounts.ALL = totalcount;
-       
-    await Order.find(filter)
-        .then((orders) => {
-            console.log("get orders ",orders);
-            if (orders.length === 0) {
-                return res.json({
-                    error: "No orders with the specified status found.",
-                    statusCounts
-                });
-            }
 
+exports.getOrdersByFilter = async (req, res) => {
+    try {
+        const { orderStatus, Time } = req.body;
+        console.log("data", req.body);
+
+        let filter = {};
+        console.log("get orders for admin side for filter!!!");
+
+        if (req.body.orderStatus) {
+            filter.orderStatus = orderStatus;
+        }
+
+        if (req.body.Time) {
+            let currentDate = new Date();
+
+            switch (Time) {
+                case "Last 7 days":
+                    let sevenDaysAgo = new Date(currentDate);
+                    sevenDaysAgo.setDate(currentDate.getDate() - 7);
+                    filter.createdAt = { $gte: sevenDaysAgo, $lt: currentDate };
+                    break;
+
+                case "Last 15 days":
+                    let fifteenDaysAgo = new Date(currentDate);
+                    fifteenDaysAgo.setDate(currentDate.getDate() - 15);
+                    filter.createdAt = { $gte: fifteenDaysAgo, $lt: currentDate };
+                    break;
+
+                case "Last 30 days":
+                    let thirtyDaysAgo = new Date(currentDate);
+                    thirtyDaysAgo.setDate(currentDate.getDate() - 30);
+                    filter.createdAt = { $gte: thirtyDaysAgo, $lt: currentDate };
+                    break;
+
+                case "Today":
+                    let startOfDay = new Date(currentDate.setUTCHours(0, 0, 0, 0));
+                    let endOfDay = new Date(currentDate.setUTCHours(23, 59, 59, 999));
+                    filter.createdAt = { $gte: startOfDay, $lt: endOfDay };
+                    break;
+
+                case "Yesterday":
+                    let yesterday = new Date(currentDate);
+                    yesterday.setDate(currentDate.getDate() - 1);
+                    let startOfYesterday = new Date(yesterday.setUTCHours(0, 0, 0, 0));
+                    let endOfYesterday = new Date(yesterday.setUTCHours(23, 59, 59, 999));
+                    filter.createdAt = { $gte: startOfYesterday, $lt: endOfYesterday };
+                    break;
+
+                default:
+                    filter.createdAt = null;
+                    break;
+            }
+        }
+
+        const totalcount = await Order.countDocuments();
+
+        const statusCounts = await Order.aggregate([
+            {
+                $group: {
+                    _id: "$orderStatus",
+                    count: { $sum: 1 }
+                }
+            },
+            {
+                $project: {
+                    _id: 0,
+                    status: "$_id",
+                    count: 1
+                }
+            }
+        ]);
+
+        statusCounts.push({ status: "ALL", count: totalcount });
+
+        const orders = await Order.find(filter);
+
+        console.log("get orders ", orders);
+
+        if (orders.length === 0) {
             return res.json({
-                orders: orders,
+                error: "No orders with the specified status found.",
                 statusCounts
             });
-        })
-        .catch((error) => {
-            return res.json({
-                error: error
-            });
+        }
+
+        return res.json({
+            orders,
+            statusCounts
         });
+    } catch (error) {
+        console.error("Error - ", error);
+        return res.status(500).json({
+            error: "Internal Server Error"
+        });
+    }
 };
+
 
 
 exports.getAOrderDetail = (req, res) => {
