@@ -128,9 +128,20 @@ exports.getOrdersByFilter = async (req, res) => {
 
         statusCounts.push({ status: "ALL", count: totalcount });
 
-        const orders = await Order.find(filter);
+        const orders = await Order.find(filter)
+            .select({
+                "orderUpdateWAPhone": 1,
+                "paymentResponse": 1,
+                "orderTotal": 1,
+                "orderStatus":1,
+                "createdAt": 1,
+                "_id": 1,
+                "shipmentPincode": 1,
+                "orderProduct": 1,  // Assuming there's a "qty" field in orderProduct that you want to exclude
+            })
+            .populate("orderProduct.product.id", "_id");  // Assuming "id" is the field containing the product ID
 
-        console.log("get orders ", orders);
+        // console.log("get orders ", orders);
 
         if (orders.length === 0) {
             return res.json({
