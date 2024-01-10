@@ -167,38 +167,94 @@ exports.getOrdersByFilter = async (req, res) => {
 exports.getAOrderDetail = (req, res) => {
     pigcolor.box("Get A: Order Detail");
     console.log(req.params);
-    Order.findOne({ _id: req.params.orderID }).then((order, err) => {
-        if (err) {
-            return res.json({
-                order: order
-            })
-        }
+    Order.findOne({ _id: req.params.orderID })
+    .select({
+        shipmentAddress: 1,
+        orderId: 1,
+        createdAt: 1,
+        orderUpdateWAPhone: 1,
+        paymentStatus: 1,
+        paymentTotal: 1,
+        orderIssueStatus: 1,
+        orderStatus: 1,
+        paymentMethod: 1,
+        paymentId: 1,
+        shipmentId: 1,
+        shipmentPincode: 1,
+        shipmentState: 1,
+        orderForUser:1
+    })
+    .populate({
+        path: 'orderForUser',
+        select: 'contactNumber contactWAForAuto userName'
+    })
+    .then((order) => {
         if (!order) {
             return res.json({
                 error: "Order Id not Found"
-            })
-        }
-        User.findOne({ _id: order.orderForUser }).then((user, err) => {
+            });
+        } 
+        User.findOne({ _id: order.orderForUser }) .select({
+            contactNumber:1,
+            contactWAForAuto:1,
+            userName:1,
+            userGoogleName:1
+        }).then((user, err) => {
 
-            if (err) {
-                return res.json({
-                    order: order
-                })
-            }
-            return res.json({
-                order: order,
-                user: user
-            })
-        }).catch((err) => {
-            return res.json({
-                order: order
-            })
-        });
-
-
-    }).catch((error) => {
+                    if (err) {
+                        return res.json({
+                            order: order
+                        })
+                    }
+                    return res.json({
+                        order: order,
+                        user: user
+                    })
+                }).catch((err) => {
+                    return res.json({
+                        order: order
+                    })
+        
+    })
+})
+    .catch((error) => {
         console.log("Error - ", error);
+        return res.status(500).json({
+            error: "Internal Server Error"
+        });
     });
+    // Order.findOne({ _id: req.params.orderID }).then((order, err) => {
+    //     if (err) {
+    //         return res.json({
+    //             order: order
+    //         })
+    //     }
+    //     if (!order) {
+    //         return res.json({
+    //             error: "Order Id not Found"
+    //         })
+    //     }
+    //     User.findOne({ _id: order.orderForUser }).then((user, err) => {
+
+    //         if (err) {
+    //             return res.json({
+    //                 order: order
+    //             })
+    //         }
+    //         return res.json({
+    //             order: order,
+    //             user: user
+    //         })
+    //     }).catch((err) => {
+    //         return res.json({
+    //             order: order
+    //         })
+    //     });
+
+
+    // }).catch((error) => {
+    //     console.log("Error - ", error);
+    // });
 }
 
 

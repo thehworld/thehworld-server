@@ -772,7 +772,16 @@ exports.removeCartFromCartSection = (req, res) => {
 // ?? All Users Data
 exports.getAllUsersDetails = (req, res) => {
     pigcolor.box("Get All: Users");
-    User.find({}).then((allUsers, error) => {
+    User.find({})
+    .select({
+        userGoogleName:1,
+        userProfilePic:1,
+        userEmail:1,
+        contactNumber:1,
+        contactWAForAuto:1,
+        userId:1
+    })
+    .then((allUsers, error) => {
         if (error) {
             return res.json({
                 error: error
